@@ -1,16 +1,18 @@
 package src.main.java.com.example.demo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.context.annotation.ComponentScan;
 
 import src.main.java.com.example.model.Calculator;
 import src.main.java.com.example.model.Student;
 
 @SpringBootApplication
+@ComponentScan(basePackages = "src.main.java.com.example")
 public class DemoApplication implements CommandLineRunner {
 
     public static void main(String[] args) {
