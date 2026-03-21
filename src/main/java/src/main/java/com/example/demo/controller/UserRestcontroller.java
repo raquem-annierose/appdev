@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.annotation.PostConstruct;
@@ -18,6 +20,7 @@ import src.main.java.com.example.model.Student;
 
 
 @RestController
+@RequestMapping("user")
 public class UserRestcontroller {
 
 	
@@ -51,14 +54,14 @@ public class UserRestcontroller {
 			
 	}
 	
-	@GetMapping("user")
+	@GetMapping("/")
     public List<Student> getAllUsers() {
 		
 		return students;
 		
 	}
 	
-	@GetMapping("user/{id}")
+	@GetMapping("/{id}")
     public Student getUsersById(@PathVariable Long id) {
 		
 			if (Objects.nonNull(students)) {
@@ -79,7 +82,7 @@ public class UserRestcontroller {
 		
 	}
 
-	@PostMapping("user")
+	@PostMapping("/")
 	public Student addStudent(@RequestBody Student student) {
 		if (Objects.nonNull(student)) {
 		
@@ -100,6 +103,53 @@ public class UserRestcontroller {
 		return null;
 		
 	}
+	
+	@GetMapping("/filterLastName")
+	public List <Student> searchByLastName(@RequestParam String lastName) {
+		List<Student> result = new ArrayList<>();
+		if (Objects.nonNull(lastName) && Objects.nonNull(students)) {
+			for (Student student : students) {
+				if (lastName.equalsIgnoreCase(student.getLastName())) {
+					result.add(student);
+				}
+			}
+		}
+		return result;
+	}
+
+	@GetMapping("/filter")
+	public List <Student> searchByName(@RequestParam String name) {
+		List<Student> result = new ArrayList<>();
+		if (Objects.nonNull(name) && Objects.nonNull(students)) {
+			for (Student student : students) {
+				
+				if (name.equalsIgnoreCase(student.getFirstName()) || name.equalsIgnoreCase(student.getLastName())) {
+					result.add(student);
+				}
+				else if (name.equalsIgnoreCase(student.getFirstName() + " " + student.getLastName())) {
+					result.add(student);
+				}
+			}
+		}
+		return result;
+		
+		
+		
+	}
+
+	// @GetMapping("/fileter")
+	// public Student searchByName(@RequestBody Student student) {
+	// 	if (Objects.nonNull(student)) {
+	// 		for (Student st : students) {
+	// 			if (st.getFirstName().equals(student.getFirstName()) &&
+	// 					st.getLastName().equals(student.getLastName())) {
+	// 				return st;
+	// 			}
+	// 		}
+	// 	}
+	// 	return null;
+		
+	// }
 	
 //
 //	@GetMapping("user/id")
