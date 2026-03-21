@@ -29,7 +29,7 @@ public class StudentController {
     @PostMapping
     public Student createStudent(@RequestBody StudentRequest request) {
         Student student = new Student(
-            request.getFirstName(),
+            0, request.getFirstName(),
             request.getLastName(),
             request.getMidtermGrade(),
             request.getFinalGrade()

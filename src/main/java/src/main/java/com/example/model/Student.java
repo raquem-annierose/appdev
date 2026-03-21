@@ -6,16 +6,49 @@ public class Student {
 	private String lastName;
 	private float midtermGrade;
 	private float finalGrade;
+	private long id;
 	
 	//constructor
 	
-	public Student (String firstName, String lastName,
-			float midtermGrade,float finalGrade) {
-		
+	public Student ( long id, String firstName, String lastName,
+			float midtermGrade, float finalGrade) {
+		this.id = id;
 		this.firstName = firstName;
 		this.lastName =lastName; 
 		this.midtermGrade = midtermGrade;
 		this.finalGrade = finalGrade;
+	}
+
+	public Long getId() {
+		return id;
+	}
+	
+	public void setId(long id) {
+    this.id = id;
+    }
+	
+	public float getMidtermGrade() {
+		return midtermGrade;
+	}
+
+	public void setMidtermGrade(float midtermGrade) {
+		this.midtermGrade = midtermGrade;
+	}
+
+	public float getFinalGrade() {
+		return finalGrade;
+	}
+
+	public void setFinalGrade(float finalGrade) {
+		this.finalGrade = finalGrade;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
 	public String getFirstName() {
