@@ -104,6 +104,20 @@ public class UserRestcontroller {
 		
 	}
 	
+	@GetMapping("/filterFullName")
+	public List <Student> searchByFullName(@RequestParam String lastName, @RequestParam String firstName) {
+		List<Student> result = new ArrayList<>();
+		if (Objects.nonNull(lastName) && Objects.nonNull(firstName) && Objects.nonNull(students)) {
+			for (Student student : students) {
+				if (lastName.equalsIgnoreCase(student.getLastName()) && firstName.equalsIgnoreCase(student.getFirstName())) {
+					result.add(student);
+				}
+			}
+		}
+		return result;
+	}
+	
+	
 	@GetMapping("/filterLastName")
 	public List <Student> searchByLastName(@RequestParam String lastName) {
 		List<Student> result = new ArrayList<>();
