@@ -77,7 +77,7 @@ public class UserRestController {
         return null;
     }
     
-    @GetMapping("/filterFullName")
+    @GetMapping("/filter/full-name")
     public List<Student> searchByFullName(@RequestParam String lastName, @RequestParam String firstName) {
         List<Student> result = new ArrayList<>();
         if (Objects.nonNull(lastName) && Objects.nonNull(firstName) && Objects.nonNull(students)) {
@@ -91,7 +91,7 @@ public class UserRestController {
         return result;
     }
     
-    @GetMapping("/filterLastName")
+    @GetMapping("/filter/last-name")
     public List<Student> searchByLastName(@RequestParam String lastName) {
         List<Student> result = new ArrayList<>();
         if (Objects.nonNull(lastName) && Objects.nonNull(students)) {
