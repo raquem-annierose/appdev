@@ -23,7 +23,7 @@ public class ActivityController {
     private final List<Activity> activities = new ArrayList<>();
     private final AtomicLong idCounter = new AtomicLong(1);
 
-    // Inner class for Activity model
+   
     static class Activity {
         private Long id;
         private String name;
@@ -47,7 +47,7 @@ public class ActivityController {
         public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     }
 
-    // Inner class for request body
+    
     static class ActivityRequest {
         private String name;
         private String description;
@@ -58,7 +58,6 @@ public class ActivityController {
         public void setDescription(String description) { this.description = description; }
     }
 
-    // POST /activities - Create a new activity
     @PostMapping
     public ResponseEntity<?> createActivity(@RequestBody ActivityRequest request) {
         if (request.getName() == null || request.getName().trim().isEmpty()) {
@@ -74,13 +73,11 @@ public class ActivityController {
         return ResponseEntity.status(HttpStatus.CREATED).body(activity);
     }
 
-    // GET /activities - Retrieve all activities
     @GetMapping
     public ResponseEntity<List<Activity>> getAllActivities() {
         return ResponseEntity.ok(activities);
     }
 
-    // GET /activities/{id} - Retrieve a single activity by ID
     @GetMapping("/{id}")
     public ResponseEntity<?> getActivityById(@PathVariable Long id) {
         for (Activity activity : activities) {
@@ -92,7 +89,6 @@ public class ActivityController {
                 .body("Activity with ID " + id + " not found.");
     }
 
-    // PUT /activities/{id} - Update an existing activity
     @PutMapping("/{id}")
     public ResponseEntity<?> updateActivity(@PathVariable Long id, @RequestBody ActivityRequest request) {
         if (request.getName() == null || request.getName().trim().isEmpty()) {
@@ -109,7 +105,6 @@ public class ActivityController {
                 .body("Activity with ID " + id + " not found.");
     }
 
-    // DELETE /activities/{id} - Delete an activity
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteActivity(@PathVariable Long id) {
         boolean removed = activities.removeIf(activity -> activity.getId().equals(id));
