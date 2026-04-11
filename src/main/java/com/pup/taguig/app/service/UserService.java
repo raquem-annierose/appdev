@@ -9,5 +9,6 @@ public interface UserService {
 	
 	public Student addUser(Student student);
 	public List<Student>retrieveAllStudent();
+	public Student getUserById(Long id);
 	
 }

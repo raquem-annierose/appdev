@@ -35,8 +35,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<Student>retrieveAllStudent() {
+    public List<Student> retrieveAllStudent() {
     	return students;
+    }
+
+    @Override
+    public Student getUserById(Long id) {
+        for (Student student : students) {
+            if (student.getId().equals(id)) {
+                return student;
+            }
+        }
+        return null;
     }
     
     

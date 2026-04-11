@@ -55,12 +55,14 @@ public class UserRestController {
     
     @GetMapping("/{id}")
     public Student getUsersById(@PathVariable Long id) {
+        
         if (Objects.nonNull(students)) {
-            for (Student student : students) {
-                if (student.getId().equals(id)) {
-                    return student;
-                }
-            }
+            // for (Student student : students) {
+            //     if (student.getId().equals(id)) {
+            //         return student;
+            //     }
+            // }
+            return userService.getUserById(id);
         }
         System.out.println(students.size());
         return null;
