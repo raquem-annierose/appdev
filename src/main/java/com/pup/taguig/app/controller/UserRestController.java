@@ -88,20 +88,13 @@ public class UserRestController {
     }
 
     @GetMapping("/filter")
-	public List <Student> searchByName(@RequestParam("lastName") String name, 
-		@RequestParam String firstName,@RequestParam String midtermGrade, @RequestParam String finalGrade) {
-		List <Student> result = new ArrayList<>();
-		if (Objects.nonNull(name) && Objects.nonNull(students)) {
-			for (Student student: students) {
-				if (name.equalsIgnoreCase(student.getLastName()) &&
-						student.getFirstName().equalsIgnoreCase(firstName)) {
-					result.add(student);
-				}
-			}
-		}
-			
-		return result;
-	}
+    public List<Student> searchByName(@RequestParam("lastName") String name,
+            @RequestParam String firstName) {
+        if (Objects.nonNull(name) && Objects.nonNull(firstName)) {
+            return userService.searchByName(name, firstName);
+        }
+        return new ArrayList<>();
+    }
 
     @DeleteMapping("/{id}")
     public boolean deleteStudent(@RequestParam("id") Long id) {
