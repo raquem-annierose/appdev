@@ -55,11 +55,23 @@ Service Layer
 ---
 
 ### **2. Service Layer** (Business Logic)
-📌 **Responsibility:** Gawin ang actual business logic at processing
+📌 **Responsibility:** Gawin ang actual business logic, processing, at validation ng data
+
+**Ano ang Service Layer?**
+
+Ang Service Layer ay ang "brains" ng application - ito ang tumutukoy kung paano dapat mag-behave ang application based sa business requirements. Hindi ito direktang nakikipag-ugnayan sa HTTP requests o database operations. Ang role niya ay:
+
+- ✅ **Mag-process ng business logic** - Validation, calculations, transformations
+- ✅ **Mag-orchestrate** - Coordinate between multiple repositories kung kailangan
+- ✅ **Mag-enforce ng business rules** - Ensure data integrity and consistency
+- ✅ **Reusable** - Maaaring gamitin ng multiple controllers (web, API, mobile)
+
+---
 
 **OOP Concept:**
 - **Polymorphism**: UserService (interface) → UserServiceImpl (implementation)
 - **Abstraction**: Ang database queries ay abstracto mula sa controller
+- **Single Responsibility**: Service = Business Logic lang, walang HTTP na involvement
 
 ```
 Service Interface (UserService)
@@ -67,7 +79,409 @@ Service Interface (UserService)
 Service Implementation (UserServiceImpl)
     ↓
 Repository Layer
+    ↓
+Database
 ```
+
+---
+
+**Service Layer Architecture:**
+
+```java
+// 1. INTERFACE - Ang contract/agreement
+public interface UserService {
+    public Student addUser(Student student);  // Add new student
+    public List<Student> retrieveAllStudent(); // Get all students
+}
+
+// 2. IMPLEMENTATION - Ang actual logic
+public class UserServiceImpl implements UserService {
+    
+    // Inject repository para makipag-communicate sa database
+    @Autowired
+    private UserRepository userRepository;
+    
+    @Override
+    public Student addUser(Student student) {
+        // Business logic before saving
+        // 1. Validate student data
+        if (student.getName() == null || student.getName().isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be empty");
+        }
+        
+        // 2. Apply business rules
+        student.setCreatedAt(LocalDateTime.now());
+        student.setStatus("ACTIVE");
+        
+        // 3. Call repository para mag-save sa database
+        return userRepository.save(student);
+    }
+    
+    @Override
+    public List<Student> retrieveAllStudent() {
+        // Business logic for retrieval
+        List<Student> students = userRepository.findAll();
+        
+        // Can do additional processing here if needed
+        // e.g., filter, sort, enrich data
+        return students;
+    }
+}
+```
+
+---
+
+**Flow ng Service Layer:**
+
+```
+1. CONTROLLER receives request
+   ↓
+2. CONTROLLER calls Service method
+   @PostMapping("/students")
+   public ResponseEntity<?> addStudent(@RequestBody Student student) {
+       Student saved = userService.addUser(student);  ← Call service
+       return ResponseEntity.ok(saved);
+   }
+   ↓
+3. SERVICE executes business logic
+   - Validate input data
+   - Apply business rules
+   - Call repository if needed
+   ↓
+4. SERVICE returns result to Controller
+   ↓
+5. CONTROLLER sends response to client
+```
+
+---
+
+**Why Separate Service Layer?**
+
+| **Without Service Layer** | **With Service Layer** |
+|---|---|
+| Controller may malaki at complex | Controller lean at focused sa HTTP |
+| Business logic scattered everywhere | Business logic centralized |
+| Hard to test business logic | Easy to test with mocks |
+| Hard to reuse business logic | Reusable across multiple controllers |
+| Database queries sa controller | Controllers hindi alam tungkol sa DB |
+
+---
+
+**Example ng Business Logic sa Service:**
+
+```java
+// UserServiceImpl.java
+@Service
+public class UserServiceImpl implements UserService {
+    
+    @Autowired
+    private UserRepository userRepository;
+    
+    @Autowired
+    private EmailService emailService; // May dependency din sa iba
+    
+    public Student addUser(Student student) {
+        // VALIDATION - Check if data is valid
+        if (student.getAge() < 18) {
+            throw new BusinessException("Student must be 18 or older");
+        }
+        
+        // CHECK DUPLICATES - Business rule
+        if (userRepository.existsByEmail(student.getEmail())) {
+            throw new BusinessException("Email already registered");
+        }
+        
+        // SET DEFAULTS - Business rule
+        student.setStatus("PENDING");
+        student.setRegistrationDate(LocalDateTime.now());
+        
+        // SAVE - Call repository
+        Student savedStudent = userRepository.save(student);
+        
+        // SEND EMAIL - Orchestrate other services
+        emailService.sendWelcomeEmail(savedStudent.getEmail());
+        
+        // RETURN - Give result back to controller
+        return savedStudent;
+    }
+    
+    public List<Student> retrieveAllStudent() {
+        // Get from repository
+        List<Student> students = userRepository.findAll();
+        
+        // Filter only active students (business rule)
+        return students.stream()
+            .filter(s -> "ACTIVE".equals(s.getStatus()))
+            .collect(Collectors.toList());
+    }
+}
+```
+
+---
+
+**Key Responsibilities ng Service Layer:**
+
+| **Responsibility** | **Example** |
+|---|---|
+| **Validation** | Check if email format is valid, age >= 18 |
+| **Business Rules** | Prevent duplicate records, enforce status transitions |
+| **Data Transformation** | Convert Student to StudentDTO |
+| **Orchestration** | Call multiple repositories, coordinate operations |
+| **Transaction Management** | Ensure multiple DB operations succeed together |
+| **Error Handling** | Catch exceptions, throw meaningful business exceptions |
+| **Logging** | Log important business events |
+
+---
+
+**Service Layer vs Repository Layer:**
+
+```
+SERVICE LAYER (UserServiceImpl)
+- "Should I save this student?" ← Business decision
+- "Is this student eligible?" ← Business logic
+- "What should happen after saving?" ← Orchestration
+- "Format the response correctly" ← Transformation
+
+REPOSITORY LAYER (UserRepository)
+- "Execute SQL INSERT" ← Technical decision
+- "Connect to database" ← Database operation
+- "Return raw data from DB" ← Data access
+```
+
+---
+
+**Spring Annotations sa Service:**
+
+```java
+@Service  // Spring component - managed by Spring container
+@Transactional  // Auto rollback on error
+public class UserServiceImpl implements UserService {
+    
+    @Autowired  // Inject dependencies
+    private UserRepository userRepository;
+    
+    @Override
+    public Student addUser(Student student) {
+        // Implementation
+    }
+}
+```
+
+`@Service` = Tells Spring this is a service component
+`@Autowired` = Inject the dependency automatically
+`@Transactional` = If anything fails, undo everything (ACID compliance)
+
+---
+
+## Current Implementation Analysis - UserServiceImpl
+
+### **The Interface - UserService**
+
+```java
+public interface UserService {
+    public Student addUser(Student student);
+    public List<Student> retrieveAllStudent();
+}
+```
+
+**What it does:**
+- Defines 2 contracts (agreements) na dapat i-implement ng UserServiceImpl
+- Says: "Any class implementing me MUST have these 2 methods"
+
+---
+
+### **Current Implementation - UserServiceImpl** (SKELETON ONLY ⚠️)
+
+```java
+public class UserServiceImpl implements UserService {
+    
+    @Override
+    public Student addUser(Student student) {
+    	return null;  // ❌ EMPTY - Kailangan i-implement
+    }
+
+    @Override
+    public List<Student> retrieveAllStudent() {
+    	return null;  // ❌ EMPTY - Kailangan i-implement
+    }
+}
+```
+
+**Current Problems:**
+- ❌ Pareho ay nagre-return lang ng `null` (unusable)
+- ❌ Walang actual business logic
+- ❌ Walang database interaction (repository)
+- ❌ Walang validation ng data
+- ❌ Walang `@Service`, `@Autowired`, `@Transactional` annotations
+- ❌ Walang error handling
+
+---
+
+### **The Student Model**
+
+```java
+public class Student {
+    private String firstName;
+    private String lastName;
+    private float midtermGrade;
+    private float finalGrade;
+    private long id;
+    
+    // Constructor
+    public Student(long id, String firstName, String lastName,
+            float midtermGrade, float finalGrade) { ... }
+    
+    // Getters & Setters (Encapsulation)
+    public String getFirstName() { return firstName; }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
+    // ... more getters/setters
+    
+    // Business Logic Methods:
+    public float compute() {  // Calculate average
+        return (midtermGrade + finalGrade) / 2;
+    }
+    
+    public String evaluate() {  // Pass or Fail
+        float average = this.compute();
+        if (average >= 75) {
+            return "Pass";
+        } else {
+            return "Failed";
+        }
+    }
+}
+```
+
+**Student Model has:**
+- ✅ Private properties (Encapsulation principle)
+- ✅ Constructor for object creation
+- ✅ Getters & Setters for controlled access
+- ✅ Business logic methods (`compute()`, `evaluate()`)
+
+---
+
+### **Data Flow Through Service Layer**
+
+```
+1. CLIENT sends HTTP request
+   POST /api/students {"firstName": "Juan", "lastName": "Dela Cruz", ...}
+            ↓
+2. CONTROLLER receives request
+   @PostMapping("/students")
+   public ResponseEntity<?> addStudent(@RequestBody Student student) {
+            ↓
+3. CONTROLLER calls Service
+   Student saved = userService.addUser(student);
+            ↓
+4. SERVICE validates and processes
+   - Check if firstName is not empty
+   - Check if grades are 0-100
+   - Apply business rules
+            ↓
+5. SERVICE calls Repository
+   return studentRepository.save(student);
+            ↓
+6. REPOSITORY saves to Database
+   SQL: INSERT INTO students VALUES (...)
+            ↓
+7. DATABASE returns saved Student with ID
+            ↓
+8. SERVICE returns Student to Controller
+            ↓
+9. CONTROLLER returns JSON response to client
+   HTTP 201 CREATED + Student object
+```
+
+---
+
+### **What Needs to Be Implemented** ⚙️
+
+#### **Method 1: `addUser(Student student)`**
+
+Should do:
+1. **Validate input** - Check if data is not null/empty
+2. **Check business rules** - Grades must be 0-100
+3. **Check for duplicates** - If applicable
+4. **Set defaults** - Status, timestamps
+5. **Call repository** - Save to database
+6. **Return result** - The saved Student
+
+```java
+@Override
+public Student addUser(Student student) {
+    // 1. VALIDATE
+    if (student.getFirstName() == null || student.getFirstName().isEmpty()) {
+        throw new ValidationException("First name is required");
+    }
+    if (student.getLastName() == null || student.getLastName().isEmpty()) {
+        throw new ValidationException("Last name is required");
+    }
+    
+    // 2. CHECK business rules
+    if (student.getMidtermGrade() < 0 || student.getMidtermGrade() > 100) {
+        throw new ValidationException("Midterm grade must be 0-100");
+    }
+    if (student.getFinalGrade() < 0 || student.getFinalGrade() > 100) {
+        throw new ValidationException("Final grade must be 0-100");
+    }
+    
+    // 3. SAVE to database
+    Student savedStudent = studentRepository.save(student);
+    
+    // 4. RETURN
+    return savedStudent;
+}
+```
+
+---
+
+#### **Method 2: `retrieveAllStudent()`**
+
+Should do:
+1. **Query database** - Get all students from repository
+2. **Filter if needed** - Apply business rules (only active, etc.)
+3. **Return list** - All students
+
+```java
+@Override
+public List<Student> retrieveAllStudent() {
+    // 1. GET from repository
+    List<Student> students = studentRepository.findAll();
+    
+    // 2. FILTER if needed (example)
+    // Can add filtering logic here
+    // e.g., students.stream().filter(...).collect(...)
+    
+    // 3. RETURN
+    return students;
+}
+```
+
+---
+
+### **Issues with Current Implementation**
+
+| **Issue** | **Impact** | **Solution** |
+|---|---|---|
+| Returns `null` | Method unusable, causes NullPointerException | Implement actual logic |
+| No validation | Invalid data gets saved to DB | Add validation annotations & logic |
+| No repository | Can't save/retrieve data | Inject `UserRepository` |
+| No annotations | Spring doesn't recognize as service | Add `@Service`, `@Autowired` |
+| No error handling | Errors not caught/handled properly | Add try-catch & throw exceptions |
+| No business logic | No actual processing happens | Implement business rules |
+
+---
+
+### **Summary: Service Layer Implementation Checklist** ✓
+
+- [ ] Add `@Service` annotation to UserServiceImpl
+- [ ] Add `@Autowired UserRepository` dependency
+- [ ] Implement `addUser()` with validation & repository call
+- [ ] Implement `retrieveAllStudent()` with repository call
+- [ ] Add input validation checks
+- [ ] Add business rule validation
+- [ ] Handle exceptions properly
+- [ ] Add logging (optional)
 
 ---
 

@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pup.taguig.app.model.Student;
+import com.pup.taguig.app.model.User;
+import com.pup.taguig.app.service.UserService;
+import com.pup.taguig.app.service.impl.UserServiceImpl;
 
 import jakarta.annotation.PostConstruct;
 
@@ -22,6 +25,11 @@ import jakarta.annotation.PostConstruct;
 public class UserRestController {
 
     private List<Student> students = null;
+    
+    List<User> users = new ArrayList<User>();
+
+
+    private final UserService userService = new UserServiceImpl();
     
     @PostConstruct
     public void init() {
@@ -60,19 +68,21 @@ public class UserRestController {
 
     @PostMapping("/")
     public Student addStudent(@RequestBody Student student) {
+        Student result = null;
         if (Objects.nonNull(student)) {
-            LocalDateTime date = LocalDateTime.now();
-            long id = date.getDayOfYear() + 
-                    date.getYear() +
-                    date.getMonthValue() +
-                    date.getDayOfMonth() +
-                    date.getDayOfWeek().getValue() +
-                    date.getHour() +
-                    date.getMinute() +
-                    date.getSecond() +
-                    date.getNano();
-            student.setId(id);
-            students.add(student);
+        // LocalDateTime date = LocalDateTime.now();
+        // long id = date.getDayOfYear() +
+        //         date.getYear() +
+        //         date.getMonthValue() +
+        //         date.getDayOfMonth() +
+        //         date.getDayOfWeek().getValue() +
+        //         date.getHour() +
+        //         date.getMinute() +
+        //         date.getSecond() +
+        //         date.getNano();
+        // student.setId(id);
+        // students.add(student);
+            result =userService.addUser(student);
         }
         return null;
     }

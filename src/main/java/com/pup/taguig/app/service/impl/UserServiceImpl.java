@@ -1,5 +1,7 @@
 package com.pup.taguig.app.service.impl;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.pup.taguig.app.model.Student;
@@ -9,16 +11,30 @@ import com.pup.taguig.app.service.UserService;
 
 public class UserServiceImpl implements UserService {
 
-
+    private List<Student> students = new ArrayList<>();
 
     @Override
     public Student addUser(Student student) {
-    	return null;
+
+        LocalDateTime date = LocalDateTime.now();
+        long id = date.getDayOfYear() +
+                date.getYear() +
+                date.getMonthValue() +
+                date.getDayOfMonth() +
+                date.getDayOfWeek().getValue() +
+                date.getHour() +
+                date.getMinute() +
+                date.getSecond() +
+                date.getNano();
+        student.setId(id);
+        students.add(student);
+
+    	return student;
     }
 
     @Override
     public List<Student>retrieveAllStudent() {
-    	return null;
+    	return students;
     }
     
     
