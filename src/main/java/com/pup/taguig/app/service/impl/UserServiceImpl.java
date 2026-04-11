@@ -63,20 +63,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<Student> searchByName(String name, String firstName) {
-        List<Student> result = new ArrayList<>();
-        for (Student student : students) {
-            if (name.equalsIgnoreCase(student.getFirstName()) ||
-                name.equalsIgnoreCase(student.getLastName())) {
-                result.add(student);
-            } else if (name.equalsIgnoreCase(student.getFirstName() + " " + student.getLastName())) {
-                result.add(student);
-            }
-        }
-        return result;
-    }
+	public List<Student>searchByName(String name, String firstName) {
+		List<Student> result = new ArrayList<Student>();
+		
+		for (Student student: students) {
+			if (name.equalsIgnoreCase(student.getLastName()) &&
+					student.getFirstName().equalsIgnoreCase(firstName)) {
+				result.add(student);
+			}
+		}
+		return result;
+	}
     
-   @Override
+    @Override
     public boolean deleteStudent(Long id) {
         for (Student student : students) {
             if (student.getId().equals(id)) {

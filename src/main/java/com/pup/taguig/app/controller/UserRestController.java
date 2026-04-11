@@ -87,6 +87,33 @@ public class UserRestController {
         return userService.retrieveAllStudent();
     }
 
+    @GetMapping("/filter")
+	public List <Student> searchByName(@RequestParam("lastName") String name, 
+		@RequestParam String firstName,@RequestParam String midtermGrade, @RequestParam String finalGrade) {
+		List <Student> result = new ArrayList<>();
+		if (Objects.nonNull(name) && Objects.nonNull(students)) {
+			for (Student student: students) {
+				if (name.equalsIgnoreCase(student.getLastName()) &&
+						student.getFirstName().equalsIgnoreCase(firstName)) {
+					result.add(student);
+				}
+			}
+		}
+			
+		return result;
+	}
+
+    @DeleteMapping("/{id}")
+    public boolean deleteStudent(@RequestParam("id") Long id) {
+        return userService.deleteStudent(id);
+    }
+
+
+
+
+
+
+
     @GetMapping("/filter/full-name")
     public List<Student> searchByFullName(@RequestParam String lastName, @RequestParam String firstName) {
         List<Student> result = new ArrayList<>();
@@ -110,16 +137,5 @@ public class UserRestController {
         return new ArrayList<>();
     }
 
-    @GetMapping("/filter")
-    public List<Student> searchByName(@RequestParam String name, @RequestParam String firstName) {
-        if (Objects.nonNull(name) && Objects.nonNull(firstName)) {
-            return userService.searchByName(name, firstName);
-        }
-        return new ArrayList<>();
-    }
-
-    @DeleteMapping("/{id}")
-    public boolean deleteStudent(@RequestParam("id") Long id) {
-        return userService.deleteStudent(id);
-    }
+    
 }
