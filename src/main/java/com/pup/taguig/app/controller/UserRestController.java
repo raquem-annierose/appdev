@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,6 +47,10 @@ public class UserRestController {
         students.add(st3);
         students.add(st4);
         students.add(st5);
+
+        for (Student s : students) {
+            userService.addUser(s);
+        }
     }
     
     @GetMapping("/")
@@ -99,29 +104,22 @@ public class UserRestController {
     @GetMapping("/filter/last-name")
     public List<Student> searchByLastName(@RequestParam String lastName) {
         List<Student> result = new ArrayList<>();
-        if (Objects.nonNull(lastName) && Objects.nonNull(students)) {
-            for (Student student : students) {
-                if (lastName.equalsIgnoreCase(student.getLastName())) {
-                    result.add(student);
-                }
-            }
+        if (Objects.nonNull(lastName)) {
+            return userService.searchByLastName(lastName);
         }
-        return result;
+        return new ArrayList<>();
     }
 
     @GetMapping("/filter")
-    public List<Student> searchByName(@RequestParam String name) {
-        List<Student> result = new ArrayList<>();
-        if (Objects.nonNull(name) && Objects.nonNull(students)) {
-            for (Student student : students) {
-                if (name.equalsIgnoreCase(student.getFirstName()) || 
-                    name.equalsIgnoreCase(student.getLastName())) {
-                    result.add(student);
-                } else if (name.equalsIgnoreCase(student.getFirstName() + " " + student.getLastName())) {
-                    result.add(student);
-                }
-            }
+    public List<Student> searchByName(@RequestParam String name, @RequestParam String firstName) {
+        if (Objects.nonNull(name) && Objects.nonNull(firstName)) {
+            return userService.searchByName(name, firstName);
         }
-        return result;
+        return new ArrayList<>();
+    }
+
+    @DeleteMapping("/{id}")
+    public boolean deleteStudent(@RequestParam("id") Long id) {
+        return userService.deleteStudent(id);
     }
 }

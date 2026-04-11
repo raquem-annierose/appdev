@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.pup.taguig.app.model.Student;
 import com.pup.taguig.app.service.UserService;
@@ -49,7 +51,41 @@ public class UserServiceImpl implements UserService {
         return null;
     }
     
+    @Override
+    public List<Student> searchByLastName(String lastName) {
+        List<Student> result = new ArrayList<>();
+        for (Student student : students) {
+            if (lastName.equalsIgnoreCase(student.getLastName())) {
+                result.add(student);
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public List<Student> searchByName(String name, String firstName) {
+        List<Student> result = new ArrayList<>();
+        for (Student student : students) {
+            if (name.equalsIgnoreCase(student.getFirstName()) ||
+                name.equalsIgnoreCase(student.getLastName())) {
+                result.add(student);
+            } else if (name.equalsIgnoreCase(student.getFirstName() + " " + student.getLastName())) {
+                result.add(student);
+            }
+        }
+        return result;
+    }
     
+   @Override
+    public boolean deleteStudent(Long id) {
+        for (Student student : students) {
+            if (student.getId().equals(id)) {
+                students.remove(student);
+                return true;
+            }
+        }
+        return false;
+    }
 
 }
 
