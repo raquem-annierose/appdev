@@ -52,17 +52,6 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
-    public List<Student> searchByLastName(String lastName) {
-        List<Student> result = new ArrayList<>();
-        for (Student student : students) {
-            if (lastName.equalsIgnoreCase(student.getLastName())) {
-                result.add(student);
-            }
-        }
-        return result;
-    }
-
-    @Override
 	public List<Student>searchByName(String name, String firstName) {
 		List<Student> result = new ArrayList<Student>();
 		

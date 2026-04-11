@@ -47,10 +47,6 @@ public class UserRestController {
         students.add(st3);
         students.add(st4);
         students.add(st5);
-
-        for (Student s : students) {
-            userService.addUser(s);
-        }
     }
     
     @GetMapping("/")
@@ -62,11 +58,6 @@ public class UserRestController {
     public Student getUsersById(@PathVariable Long id) {
         
         if (Objects.nonNull(students)) {
-            // for (Student student : students) {
-            //     if (student.getId().equals(id)) {
-            //         return student;
-            //     }
-            // }
             return userService.getUserById(id);
         }
         System.out.println(students.size());
@@ -101,34 +92,4 @@ public class UserRestController {
         return userService.deleteStudent(id);
     }
 
-
-
-
-
-
-
-    @GetMapping("/filter/full-name")
-    public List<Student> searchByFullName(@RequestParam String lastName, @RequestParam String firstName) {
-        List<Student> result = new ArrayList<>();
-        if (Objects.nonNull(lastName) && Objects.nonNull(firstName) && Objects.nonNull(students)) {
-            for (Student student : students) {
-                if (lastName.equalsIgnoreCase(student.getLastName()) && 
-                    firstName.equalsIgnoreCase(student.getFirstName())) {
-                    result.add(student);
-                }
-            }
-        }
-        return result;
-    }
-    
-    @GetMapping("/filter/last-name")
-    public List<Student> searchByLastName(@RequestParam String lastName) {
-        List<Student> result = new ArrayList<>();
-        if (Objects.nonNull(lastName)) {
-            return userService.searchByLastName(lastName);
-        }
-        return new ArrayList<>();
-    }
-
-    
 }

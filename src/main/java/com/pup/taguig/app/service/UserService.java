@@ -11,7 +11,6 @@ public interface UserService {
 	public List<Student>retrieveAllStudent();
 	public Student getUserById(Long id);
 	public List<Student> searchByName(String name, String firstName);
-	public List<Student> searchByLastName(String lastName);
 	public boolean deleteStudent(Long id);
 	
 }
