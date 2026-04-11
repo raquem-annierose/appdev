@@ -70,23 +70,16 @@ public class UserRestController {
     public Student addStudent(@RequestBody Student student) {
         Student result = null;
         if (Objects.nonNull(student)) {
-        // LocalDateTime date = LocalDateTime.now();
-        // long id = date.getDayOfYear() +
-        //         date.getYear() +
-        //         date.getMonthValue() +
-        //         date.getDayOfMonth() +
-        //         date.getDayOfWeek().getValue() +
-        //         date.getHour() +
-        //         date.getMinute() +
-        //         date.getSecond() +
-        //         date.getNano();
-        // student.setId(id);
-        // students.add(student);
-            result =userService.addUser(student);
+            result = userService.addUser(student);
         }
-        return null;
+        return result;
     }
     
+    @GetMapping("/all")
+    public List<Student> getAllPosted() {
+        return userService.retrieveAllStudent();
+    }
+
     @GetMapping("/filter/full-name")
     public List<Student> searchByFullName(@RequestParam String lastName, @RequestParam String firstName) {
         List<Student> result = new ArrayList<>();

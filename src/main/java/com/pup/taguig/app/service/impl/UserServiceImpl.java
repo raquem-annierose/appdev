@@ -4,14 +4,16 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.pup.taguig.app.model.Student;
 import com.pup.taguig.app.service.UserService;
 
 
-
+@Service
 public class UserServiceImpl implements UserService {
 
-    private List<Student> students = new ArrayList<>();
+    private List<Student> students = new ArrayList<Student>();
 
     @Override
     public Student addUser(Student student) {
