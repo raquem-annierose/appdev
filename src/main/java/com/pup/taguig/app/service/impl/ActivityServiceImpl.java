@@ -3,7 +3,6 @@ package com.pup.taguig.app.service.impl;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 import com.pup.taguig.app.model.Activity;
 import com.pup.taguig.app.service.ActivityService;
@@ -11,12 +10,10 @@ import com.pup.taguig.app.service.ActivityService;
 public class ActivityServiceImpl implements ActivityService {
 
     private final List<Activity> activities = new ArrayList<>();
-    private final AtomicLong idCounter = new AtomicLong(1);
 
     @Override
     public Activity createActivity(String name, String description) {
         Activity activity = new Activity(
-                idCounter.getAndIncrement(),
                 name.trim(),
                 description,
                 LocalDateTime.now()

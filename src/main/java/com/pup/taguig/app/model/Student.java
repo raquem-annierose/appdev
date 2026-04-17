@@ -1,18 +1,28 @@
 package com.pup.taguig.app.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "student")
 public class Student {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
     private String firstName;
     private String lastName;
     private float midtermGrade;
     private float finalGrade;
-    private long id;
     
-    public Student(long id, String firstName, String lastName,
-            float midtermGrade, float finalGrade) {
-        this.id = id;
+    public Student() {}
+
+    public Student(String firstName, String lastName, float midtermGrade, float finalGrade) {
         this.firstName = firstName;
-        this.lastName = lastName; 
+        this.lastName = lastName;
         this.midtermGrade = midtermGrade;
         this.finalGrade = finalGrade;
     }

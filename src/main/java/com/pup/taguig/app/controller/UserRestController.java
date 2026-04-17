@@ -36,11 +36,11 @@ public class UserRestController {
     public void init() {
         students = new ArrayList<>();
         
-        Student st1 = new Student(1L, "Annie", "Raquem", 85, 90);
-        Student st2 = new Student(2L, "Rose", "Raquem", 95, 97);
-        Student st3 = new Student(3L, "Yowro", "Raquem", 90, 85);
-        Student st4 = new Student(4L, "Ann", "Raquem", 90, 85);
-        Student st5 = new Student(5L, "Niera", "Raquem", 90, 85);
+        Student st1 = new Student("Annie", "Raquem", 85, 90);
+        Student st2 = new Student("Rose", "Raquem", 95, 97);
+        Student st3 = new Student("Yowro", "Raquem", 90, 85);
+        Student st4 = new Student("Ann", "Raquem", 90, 85);
+        Student st5 = new Student("Niera", "Raquem", 90, 85);
         
         students.add(st1);
         students.add(st2);
