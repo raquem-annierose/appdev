@@ -62,6 +62,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<StudentResponseDTO> retrieveAllStudent() {
+        
     	return students;
     }
 
