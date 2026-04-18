@@ -1,5 +1,6 @@
 package com.pup.taguig.app.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,10 +13,20 @@ public class Student {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    auto increment id
     private long id;
+    
+//    @Column(nullable=false, length=100, unique=true)
+    @Column(nullable=false, length=100, unique=true)
     private String firstName;
+    
+    @Column(nullable=false)
     private String lastName;
+    
+    @Column(nullable=true)
     private float midtermGrade;
+    
+    @Column(nullable=true)
     private float finalGrade;
     
     public Student() {}

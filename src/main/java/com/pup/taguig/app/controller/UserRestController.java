@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,10 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pup.taguig.app.dto.StudentRequestDTO;
+import com.pup.taguig.app.dto.StudentResponseDTO;
 import com.pup.taguig.app.model.Student;
 import com.pup.taguig.app.model.User;
 import com.pup.taguig.app.service.UserService;
-import com.pup.taguig.app.service.impl.UserServiceImpl;
 
 import jakarta.annotation.PostConstruct;
 
@@ -29,8 +31,8 @@ public class UserRestController {
     
     List<User> users = new ArrayList<User>();
 
-
-    private final UserService userService = new UserServiceImpl();
+    @Autowired
+    private UserService userService;
     
     @PostConstruct
     public void init() {
@@ -49,10 +51,10 @@ public class UserRestController {
         students.add(st5);
     }
     
-    @GetMapping("/")
-    public List<Student> getAllUsers() {
-        return students;
-    }
+    // @GetMapping("/")
+    // public List<StudentResponseDTO> getAllUsers() {
+    //     return students;
+    // }
     
     @GetMapping("/{id}")
     public Student getUsersById(@PathVariable Long id) {
@@ -65,7 +67,7 @@ public class UserRestController {
     }
 
     @PostMapping("/")
-    public Student addStudent(@RequestBody Student student) {
+    public Student addStudent(@RequestBody StudentRequestDTO student) {
         Student result = null;
         if (Objects.nonNull(student)) {
             result = userService.addUser(student);
@@ -74,12 +76,12 @@ public class UserRestController {
     }
     
     @GetMapping("/all")
-    public List<Student> getAllPosted() {
+    public List<StudentResponseDTO> getAllPosted() {
         return userService.retrieveAllStudent();
     }
 
     @GetMapping("/filter")
-    public List<Student> searchByName(@RequestParam("lastName") String name,
+    public List<StudentResponseDTO> searchByName(@RequestParam("lastName") String name,
             @RequestParam String firstName) {
         if (Objects.nonNull(name) && Objects.nonNull(firstName)) {
             return userService.searchByName(name, firstName);
