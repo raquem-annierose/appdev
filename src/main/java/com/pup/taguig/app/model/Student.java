@@ -5,10 +5,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
+import jakarta.persistence.Table;
 
 @Entity
-
+@Table(name = "student")
 public class Student {
 
     @Id
@@ -20,7 +20,7 @@ public class Student {
     @Column(nullable=false, length=100, unique=true)
     private String firstName;
     
-    @Column(nullable=false)
+    @Column(nullable=false, insertable=true, updatable=false)
     private String lastName;
     
     @Column(nullable=true)

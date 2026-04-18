@@ -2,8 +2,6 @@ package com.pup.taguig.app.controller;
 
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,49 +32,27 @@ public class ActivityController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createActivity(@RequestBody ActivityRequest request) {
-        if (request.getName() == null || request.getName().trim().isEmpty()) {
-            return ResponseEntity.badRequest().body("Name is required.");
-        }
-        Activity activity = activityService.createActivity(request.getName(), request.getDescription());
-        return ResponseEntity.status(HttpStatus.CREATED).body(activity);
+    public Activity createActivity(@RequestBody ActivityRequest request) {
+        return activityService.createActivity(request.getName(), request.getDescription());
     }
 
     @GetMapping
-    public ResponseEntity<List<Activity>> getAllActivities() {
-        return ResponseEntity.ok(activityService.getAllActivities());
+    public List<Activity> getAllActivities() {
+        return activityService.getAllActivities();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getActivityById(@PathVariable Long id) {
-        Activity activity = activityService.getActivityById(id);
-        if (activity == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Activity with ID " + id + " not found.");
-        }
-        return ResponseEntity.ok(activity);
+    public Activity getActivityById(@PathVariable Long id) {
+        return activityService.getActivityById(id);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateActivity(@PathVariable Long id, @RequestBody ActivityRequest request) {
-        if (request.getName() == null || request.getName().trim().isEmpty()) {
-            return ResponseEntity.badRequest().body("Name is required.");
-        }
-        Activity activity = activityService.updateActivity(id, request.getName(), request.getDescription());
-        if (activity == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Activity with ID " + id + " not found.");
-        }
-        return ResponseEntity.ok(activity);
+    public Activity updateActivity(@PathVariable Long id, @RequestBody ActivityRequest request) {
+        return activityService.updateActivity(id, request.getName(), request.getDescription());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteActivity(@PathVariable Long id) {
-        boolean removed = activityService.deleteActivity(id);
-        if (!removed) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Activity with ID " + id + " not found.");
-        }
-        return ResponseEntity.ok("Activity with ID " + id + " deleted successfully.");
+    public boolean deleteActivity(@PathVariable Long id) {
+        return activityService.deleteActivity(id);
     }
 }
