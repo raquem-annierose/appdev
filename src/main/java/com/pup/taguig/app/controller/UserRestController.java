@@ -95,7 +95,7 @@ public class UserRestController {
     // }
 
     
-    @GetMapping("/all")
+    @GetMapping("/")
     public List<StudentResponseDTO> getAllPosted() {
         return userService.retrieveAllStudent();
     }

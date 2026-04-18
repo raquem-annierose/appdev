@@ -4,8 +4,21 @@ public class StudentResponseDTO {
 	 private long id;
 	 private String firstName;
 	 private String lastName;
-	 private float middletermGrade;
+	 private float midtermGrade;
 	 private float finalGrade;
+	 
+	 public StudentResponseDTO() {}
+	 
+	 public StudentResponseDTO(Long id, String firstName, String lastName, float midtermGrade, float finalGrade) {
+	 	
+		this.id = id;
+		this.firstName = firstName;
+	 	this.lastName = lastName;
+	 	this.midtermGrade = midtermGrade;
+	 	this.finalGrade = finalGrade;
+	 	
+	 }
+	 
 	 public long getId() {
 		 return id;
 	 }
@@ -24,11 +37,11 @@ public class StudentResponseDTO {
 	 public void setLastName(String lastName) {
 		 this.lastName = lastName;
 	 }
-	 public float getMiddletermGrade() {
-		 return middletermGrade;
+	 public float getMidtermGrade() {
+		 return midtermGrade;
 	 }
-	 public void setMiddletermGrade(float middletermGrade) {
-		 this.middletermGrade = middletermGrade;
+	 public void setMidtermGrade(float midtermGrade) {
+		 this.midtermGrade = midtermGrade;
 	 }
 	 public float getFinalGrade() {
 		 return finalGrade;

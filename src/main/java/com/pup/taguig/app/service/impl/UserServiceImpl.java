@@ -47,12 +47,6 @@ public class UserServiceImpl implements UserService {
             request.getMidtermGrade(),
             request.getFinalGrade()
         );
-
-        // Student studentEntity = new Student();
-        // studentEntity.setFirstName(student.getFirstName());
-        // studentEntity.setLastName(student.getLastName());
-        // studentEntity.setMidtermGrade(student.getMidtermGrade());
-        // studentEntity.setFinalGrade(student.getFinalGrade());
         
 
         student = studentRepository.save(student);
@@ -62,8 +56,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<StudentResponseDTO> retrieveAllStudent() {
-        
-    	return students;
+        List<Student> students = studentRepository.findAll();
+        List<StudentResponseDTO> response = new ArrayList<StudentResponseDTO>();
+        for (Student student : students) {
+            StudentResponseDTO dto = new StudentResponseDTO(
+                student.getId(),
+                student.getFirstName(),
+                student.getLastName(),
+                student.getMidtermGrade(),
+                student.getFinalGrade()
+            );
+            response.add(dto);
+        }
+        return response;
     }
 
     @Override
