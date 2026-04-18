@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -68,13 +67,33 @@ public class UserRestController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<?> addStudent(@RequestBody StudentRequestDTO student) {
+    public Student addStudent(@RequestBody StudentRequestDTO student) {
         if (Objects.nonNull(student)) {
             Long id = userService.addUser(student);
-            return ResponseEntity.ok("Student created with ID: " + id);
+            
+            // Create and return the saved student with all data
+            Student savedStudent = new Student(
+                student.getFirstName(),
+                student.getLastName(),
+                student.getMidtermGrade(),
+                student.getFinalGrade()
+            );
+            savedStudent.setId(id);
+            return savedStudent;
         }
-        return ResponseEntity.badRequest().body("Student data is required");
+        return null;
     }
+
+
+    // @PostMapping("/")
+    // public Student addStudent(@RequestBody StudentRequestDTO student) {
+    //     Student result = null;
+    //     if (Objects.nonNull(student)) {
+    //         result = userService.addUser(student);
+    //     }
+    //     return result;
+    // }
+
     
     @GetMapping("/all")
     public List<StudentResponseDTO> getAllPosted() {

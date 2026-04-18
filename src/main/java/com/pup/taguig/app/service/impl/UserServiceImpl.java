@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
 //        student.setId(id);
 //        students.add(student);
 
-        Student studentEntity = new Student(
+        Student student = new Student(
             request.getFirstName(),
             request.getLastName(),
             request.getMidtermGrade(),
@@ -55,9 +55,9 @@ public class UserServiceImpl implements UserService {
         // studentEntity.setFinalGrade(student.getFinalGrade());
         
 
-        studentEntity = studentRepository.save(studentEntity);
+        student = studentRepository.save(student);
         // Save to database - this triggers ID auto-generation
-        return studentEntity.getId();
+        return student.getId();
     }
 
     @Override
