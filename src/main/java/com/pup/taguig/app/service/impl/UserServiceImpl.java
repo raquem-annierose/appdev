@@ -21,11 +21,12 @@ public class UserServiceImpl implements UserService {
 
     private List<StudentResponseDTO> students = new ArrayList<StudentResponseDTO>();
     
+    // annotation for calling the repository comoconnect sa database 
     @Autowired
     private StudentRepository studentRepository;
 
     @Override
-    public Student addUser(StudentRequestDTO student) {
+    public Long addUser(StudentRequestDTO request) {
 
 //        LocalDateTime date = LocalDateTime.now();
 //        long id = date.getDayOfYear() +
@@ -40,14 +41,23 @@ public class UserServiceImpl implements UserService {
 //        student.setId(id);
 //        students.add(student);
 
-        Student studentEntity = new Student();
-        studentEntity.setFirstName(student.getFirstName());
-        studentEntity.setLastName(student.getLastName());
-        studentEntity.setMidtermGrade(student.getMidtermGrade());
-        studentEntity.setFinalGrade(student.getFinalGrade());
+        Student studentEntity = new Student(
+            request.getFirstName(),
+            request.getLastName(),
+            request.getMidtermGrade(),
+            request.getFinalGrade()
+        );
+
+        // Student studentEntity = new Student();
+        // studentEntity.setFirstName(student.getFirstName());
+        // studentEntity.setLastName(student.getLastName());
+        // studentEntity.setMidtermGrade(student.getMidtermGrade());
+        // studentEntity.setFinalGrade(student.getFinalGrade());
         
+
+        studentEntity = studentRepository.save(studentEntity);
         // Save to database - this triggers ID auto-generation
-        return studentRepository.save(studentEntity);
+        return studentEntity.getId();
     }
 
     @Override
