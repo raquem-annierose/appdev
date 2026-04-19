@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
         
 
         student = studentRepository.save(student);
-        // Save to database - this triggers ID auto-generation
+//       nagtritrigger sa id 
         return student.getId();
     }
 

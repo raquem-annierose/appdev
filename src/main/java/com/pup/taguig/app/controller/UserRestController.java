@@ -66,33 +66,33 @@ public class UserRestController {
         return null;
     }
 
-    @PostMapping("/")
-    public Student addStudent(@RequestBody StudentRequestDTO student) {
-        if (Objects.nonNull(student)) {
-            Long id = userService.addUser(student);
-            
-            // Create and return the saved student with all data
-            Student savedStudent = new Student(
-                student.getFirstName(),
-                student.getLastName(),
-                student.getMidtermGrade(),
-                student.getFinalGrade()
-            );
-            savedStudent.setId(id);
-            return savedStudent;
-        }
-        return null;
-    }
-
-
     // @PostMapping("/")
     // public Student addStudent(@RequestBody StudentRequestDTO student) {
-    //     Student result = null;
     //     if (Objects.nonNull(student)) {
-    //         result = userService.addUser(student);
+    //         Long id = userService.addUser(student);
+            
+    //         // Create and return the saved student with all data
+    //         Student savedStudent = new Student(
+    //             student.getFirstName(),
+    //             student.getLastName(),
+    //             student.getMidtermGrade(),
+    //             student.getFinalGrade()
+    //         );
+    //         savedStudent.setId(id);
+    //         return savedStudent;
     //     }
-    //     return result;
+    //     return null;
     // }
+
+
+    @PostMapping("/")
+    public Long addStudent(@RequestBody StudentRequestDTO student) {
+        Long result = null;
+        if (Objects.nonNull(student)) {
+            result = userService.addUser(student);
+        }
+        return result;
+    }
 
     
     @GetMapping("/")

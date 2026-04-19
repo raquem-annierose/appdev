@@ -8,7 +8,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "student")
 public class Student {
 
     @Id
@@ -16,7 +15,7 @@ public class Student {
 //    auto increment id
     private long id;
     
-//    @Column(nullable=false, length=100, unique=true)
+//    to modify the columns in database
     @Column(nullable=false, length=100, unique=true)
     private String firstName;
     
