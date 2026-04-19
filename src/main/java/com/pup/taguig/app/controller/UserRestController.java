@@ -93,13 +93,13 @@ public class UserRestController {
         }
         return result;
     }
-
     
     @GetMapping("/")
-    public List<StudentResponseDTO> getAllPosted() {
+    public List<StudentResponseDTO> getAllUsers() {
         return userService.retrieveAllStudent();
     }
-
+    
+    
     @GetMapping("/filter")
     public List<StudentResponseDTO> searchByName(@RequestParam("lastName") String name,
             @RequestParam String firstName) {
