@@ -4,54 +4,94 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.pup.taguig.app.dto.ActivityRequestDTO;
+import com.pup.taguig.app.dto.ActivityResponseDTO;
 import com.pup.taguig.app.model.Activity;
+import com.pup.taguig.app.repository.ActivityRepository;
 import com.pup.taguig.app.service.ActivityService;
 
+@Service
 public class ActivityServiceImpl implements ActivityService {
 
-    private final List<Activity> activities = new ArrayList<>();
+    @Autowired
+    private ActivityRepository activityRepository;
 
     @Override
-    public Activity createActivity(String name, String description) {
+    public Long createActivity(ActivityRequestDTO request) {
+        if (request == null || request.getName() == null || request.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Name is required");
+        }
+        
         Activity activity = new Activity(
-                name.trim(),
-                description,
+                request.getName().trim(),
+                request.getDescription(),
                 LocalDateTime.now()
         );
-        activities.add(activity);
-        return activity;
+        
+        activity = activityRepository.save(activity);
+        return activity.getId();
     }
 
     @Override
-    public List<Activity> getAllActivities() {
-        return activities;
-    }
-
-    @Override
-    public Activity getActivityById(Long id) {
+    public List<ActivityResponseDTO> getAllActivities() {
+        List<Activity> activities = activityRepository.findAll();
+        List<ActivityResponseDTO> response = new ArrayList<>();
         for (Activity activity : activities) {
-            if (activity.getId().equals(id)) {
-                return activity;
-            }
+            ActivityResponseDTO dto = new ActivityResponseDTO(
+                activity.getId(),
+                activity.getName(),
+                activity.getDescription(),
+                activity.getCreatedAt()
+            );
+            response.add(dto);
+        }
+        return response;
+    }
+
+    @Override
+    public ActivityResponseDTO getActivityById(Long id) {
+        Activity activity = activityRepository.findById(id).orElse(null);
+        if (activity != null) {
+            return new ActivityResponseDTO(
+                activity.getId(),
+                activity.getName(),
+                activity.getDescription(),
+                activity.getCreatedAt()
+            );
         }
         return null;
     }
 
     @Override
-    public Activity updateActivity(Long id, String name, String description) {
-        for (Activity activity : activities) {
-            if (activity.getId().equals(id)) {
-                activity.setName(name.trim());
-                activity.setDescription(description);
-                return activity;
-            }
+    public ActivityResponseDTO updateActivity(Long id, ActivityRequestDTO request) {
+        if (request == null || request.getName() == null || request.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Name is required");
+        }
+        
+        Activity activity = activityRepository.findById(id).orElse(null);
+        if (activity != null) {
+            activity.setName(request.getName().trim());
+            activity.setDescription(request.getDescription());
+            activity = activityRepository.save(activity);
+            return new ActivityResponseDTO(
+                activity.getId(),
+                activity.getName(),
+                activity.getDescription(),
+                activity.getCreatedAt()
+            );
         }
         return null;
     }
 
     @Override
     public boolean deleteActivity(Long id) {
-        return activities.removeIf(activity -> activity.getId().equals(id));
+        if (activityRepository.existsById(id)) {
+            activityRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
-
 }
