@@ -11,7 +11,7 @@ public interface UserService {
 	
 	public Long addUser(StudentRequestDTO student);
 	public List<StudentResponseDTO>retrieveAllStudent();
-	public Student getUserById(Long id);
+	public StudentResponseDTO getUserById(Long id);
 	public List<StudentResponseDTO> searchByName(String name, String firstName);
 	public boolean deleteStudent(Long id);
 	

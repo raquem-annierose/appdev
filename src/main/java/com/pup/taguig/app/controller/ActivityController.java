@@ -38,6 +38,7 @@ public class ActivityController {
     }
 
     @GetMapping("/{id}")
+    
     public ActivityResponseDTO getActivityById(@PathVariable Long id) {
         return activityService.getActivityById(id);
     }

@@ -19,7 +19,7 @@ import com.pup.taguig.app.service.UserService;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private List<StudentResponseDTO> students = new ArrayList<StudentResponseDTO>();
+    // private List<StudentResponseDTO> students = new ArrayList<StudentResponseDTO>();
     
     // annotation for calling the repository comoconnect sa database 
     @Autowired
@@ -72,18 +72,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Student getUserById(Long id) {
+    public StudentResponseDTO getUserById(Long id) {
 //        for (Student student : students) {
 //            if (student.getId().equals(id)) {
 //                return student;
 //            }
 //        }
-        return null;
+
+        Student student = studentRepository.findById(id)
+        .orElseThrow(() -> new RuntimeException("Student not found"));
+        
+        return new StudentResponseDTO( 
+            
+            student.getId(),
+            student.getFirstName(),
+            student.getLastName(),
+            student.getMidtermGrade(),
+            student.getFinalGrade()
+        );
     }
     
     @Override
 	public List<StudentResponseDTO>searchByName(String name, String firstName) {
-		List<StudentResponseDTO> result = new ArrayList<StudentResponseDTO>();
+		// List<StudentResponseDTO> result = new ArrayList<StudentResponseDTO>();
 //		List<Student> result = new ArrayList<Student>();
 ////		
 ////		for (Student student: students) {
@@ -92,7 +103,19 @@ public class UserServiceImpl implements UserService {
 ////				result.add(student);
 ////			}
 ////		}
-		return result;
+/// 
+        List<Student> students = studentRepository.findByFirstName(firstName);
+            // .orElseThrow(() -> new RuntimeException("Student not found"));
+
+		return students.stream()
+        .map(student -> new StudentResponseDTO(
+            student.getId(),
+            student.getFirstName(),
+            student.getLastName(),
+            student.getMidtermGrade(),
+            student.getFinalGrade()
+        ))
+        .toList();
 	}
     
     @Override
