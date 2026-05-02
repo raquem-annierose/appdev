@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pup.taguig.app.repositoryM.StudentMapper">
+	<resultMap id="studentResultMap" type="com.pup.taguig.app.model.StudentM">
+		<id column = "id" property = "id"/>
+		<result column = "first_name" property = "firstName"/>
+		<result column = "last_name" property = "lastName"/>
+		<result column = "midterm_grade" property = "midtermGrade"/>
+		<result column = "final_grade" property = "finalGrade"/>
+	</resultMap>
+    <select id="getUserById" resultMap = "studentResultMap">
+        SELECT * FROM student WHERE id=#{id}
+    </select>
+</mapper>

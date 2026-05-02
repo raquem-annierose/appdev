@@ -18,6 +18,7 @@ import com.pup.taguig.app.dto.StudentRequestDTO;
 import com.pup.taguig.app.dto.StudentResponseDTO;
 import com.pup.taguig.app.model.Student;
 import com.pup.taguig.app.model.User;
+import com.pup.taguig.app.service.StudentService;
 import com.pup.taguig.app.service.UserService;
 
 import jakarta.annotation.PostConstruct;
@@ -26,12 +27,21 @@ import jakarta.annotation.PostConstruct;
 @RequestMapping("user")
 public class UserRestController {
 
+    private final StudentController studentController;
+
     private List<Student> students = null;
     
     List<User> users = new ArrayList<User>();
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private StudentService studentService;
+
+    UserRestController(StudentController studentController) {
+        this.studentController = studentController;
+    }
     
     @PostConstruct
     public void init() {
@@ -58,11 +68,11 @@ public class UserRestController {
     @GetMapping("/{id}")
     public StudentResponseDTO getUsersById(@PathVariable Long id) {
         
-        if (Objects.nonNull(students)) {
-            return userService.getUserById(id);
-        }
-        System.out.println(students.size());
-        return null;
+        // if (Objects.nonNull(students)) {
+        //     return userService.getUserById(id);
+        // }
+        // System.out.println(students.size());
+        return studentService.getUserById(id);
     }
 
     // @PostMapping("/")

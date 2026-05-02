@@ -18,7 +18,7 @@ import com.pup.taguig.app.model.User;
 import com.pup.taguig.app.repository.UserRepository;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/users-raw")
 public class UserRawController {
 
     @Autowired
