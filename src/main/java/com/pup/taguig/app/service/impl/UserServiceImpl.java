@@ -126,6 +126,12 @@ public class UserServiceImpl implements UserService {
 //                return true;
 //            }
 //        }
+
+        if (studentRepository.existsById(id)) {
+            studentRepository.deleteById(id);
+            return true;
+        }
+        
         return false;
     }
 
