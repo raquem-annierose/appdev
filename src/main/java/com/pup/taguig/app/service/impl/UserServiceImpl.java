@@ -104,7 +104,7 @@ public class UserServiceImpl implements UserService {
 ////			}
 ////		}
 /// 
-        List<Student> students = studentRepository.findByFirstName(firstName);
+        List<Student> students = studentRepository.findByFirstNameAndLastName(firstName, name);
             // .orElseThrow(() -> new RuntimeException("Student not found"));
 
 		return students.stream()
