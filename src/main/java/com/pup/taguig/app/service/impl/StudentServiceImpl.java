@@ -29,8 +29,9 @@ public class StudentServiceImpl implements StudentService {
         );
     }
 
+    @Override
     public List<StudentResponseDTO> retrieveAllStudent() {
-        // Implementation for retrieving all students
+       
         List<StudentM> students = studentMapper.retrieveAllStudent();
         return students.stream()
         .map(student -> new StudentResponseDTO(
