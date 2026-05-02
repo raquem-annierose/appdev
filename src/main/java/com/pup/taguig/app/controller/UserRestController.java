@@ -1,6 +1,5 @@
 package com.pup.taguig.app.controller;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -103,10 +102,11 @@ public class UserRestController {
     @GetMapping("/filter")
     public List<StudentResponseDTO> searchByName(@RequestParam("lastName") String name,
             @RequestParam String firstName) {
+        List<StudentResponseDTO> result = new ArrayList<>();
         if (Objects.nonNull(name) && Objects.nonNull(firstName)) {
-            return userService.searchByName(name, firstName);
+            result = userService.searchByName(name, firstName);
         }
-        return new ArrayList<>();
+        return result;
     }
 
     @DeleteMapping("/{id}")
