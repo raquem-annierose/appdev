@@ -8,7 +8,23 @@
 		<result column = "midterm_grade" property = "midtermGrade"/>
 		<result column = "final_grade" property = "finalGrade"/>
 	</resultMap>
-    <select id="getUserById" resultMap = "studentResultMap">
-        SELECT * FROM student WHERE id=#{id}
+
+	<select id="getUserById" resultMap = "studentResultMap">
+        SELECT
+			*
+		FROM
+			student
+		WHERE
+			id=#{id}
     </select>
+
+	<insert id="insertStudent" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO student
+			(first_name, last_name, midterm_grade, final_grade)
+		VALUES
+			(#{firstName}, #{lastName}, #{midtermGrade}, #{finalGrade})
+	</insert>
+
+	
+	
 </mapper>

@@ -98,7 +98,7 @@ public class UserRestController {
     public Long addStudent(@RequestBody StudentRequestDTO student) {
         Long result = null;
         if (Objects.nonNull(student)) {
-            result = userService.addUser(student);
+            result = studentService.insertStudent(student);
         }
         return result;
     }

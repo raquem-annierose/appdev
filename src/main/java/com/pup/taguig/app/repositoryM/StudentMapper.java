@@ -10,5 +10,8 @@ public interface StudentMapper {
 	
 	public StudentM getUserById(Long id);
     public List<StudentM> retrieveAllStudent();
+	public Long addUser(StudentM request);
+	public Long insertUser(StudentM student);
+	public Long insertStudent(StudentM student);
     
 }
