@@ -21,10 +21,9 @@ public class ActivityController {
     private long nextId = 1;
 
     @PostMapping
-    public Activity createActivity(@RequestBody Activity request) {
+    public Object createActivity(@RequestBody Activity request) {
         if (request.getName() == null || request.getName().trim().isEmpty()) {
-            System.out.println("name is required");
-            return null;
+            return "name is required";
         }
         Activity activity = new Activity(
                 request.getName().trim(),
