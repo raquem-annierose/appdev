@@ -18,10 +18,20 @@ import org.springframework.web.bind.annotation.RestController;
 public class ActivityController {
 
     private final List<Activity> activities = new ArrayList<>();
+    private long nextId = 1;
 
     @PostMapping
-    public Activity createActivity(@RequestBody ActivityRequest request) {
-        Activity activity = new Activity(request.name.trim(), request.description, LocalDateTime.now());
+    public Activity createActivity(@RequestBody Activity request) {
+        if (request.getName() == null || request.getName().trim().isEmpty()) {
+            System.out.println("name is required");
+            return null;
+        }
+        Activity activity = new Activity(
+                request.getName().trim(),
+                request.getDescription(),
+                LocalDateTime.now()
+        );
+        activity.setId(nextId++);
         activities.add(activity);
         return activity;
     }
@@ -42,11 +52,11 @@ public class ActivityController {
     }
 
     @PutMapping("/{id}")
-    public Activity updateActivity(@PathVariable Long id, @RequestBody ActivityRequest request) {
+    public Activity updateActivity(@PathVariable Long id, @RequestBody Activity request) {
         for (Activity activity : activities) {
             if (activity.getId().equals(id)) {
-                activity.setName(request.name.trim());
-                activity.setDescription(request.description);
+                activity.setName(request.getName().trim());
+                activity.setDescription(request.getDescription());
                 return activity;
             }
         }
@@ -55,12 +65,13 @@ public class ActivityController {
 
     @DeleteMapping("/{id}")
     public boolean deleteActivity(@PathVariable Long id) {
-        return activities.removeIf(activity -> activity.getId().equals(id));
-    }
-
-    public static class ActivityRequest {
-        public String name;
-        public String description;
+        for (Activity activity : activities) {
+            if (activity.getId().equals(id)) {
+                activities.remove(activity);
+                return true;
+            }
+        }
+        return false;
     }
 
     public static class Activity {
