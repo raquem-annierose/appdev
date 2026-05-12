@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -20,8 +20,8 @@ public class ActivityController {
     private final List<Activity> activities = new ArrayList<>();
 
     @PostMapping
-    public Activity createActivity(@RequestParam String name, @RequestParam(required = false) String description) {
-        Activity activity = new Activity(name.trim(), description, LocalDateTime.now());
+    public Activity createActivity(@RequestBody ActivityRequest request) {
+        Activity activity = new Activity(request.name.trim(), request.description, LocalDateTime.now());
         activities.add(activity);
         return activity;
     }
@@ -42,11 +42,11 @@ public class ActivityController {
     }
 
     @PutMapping("/{id}")
-    public Activity updateActivity(@PathVariable Long id, @RequestParam String name, @RequestParam(required = false) String description) {
+    public Activity updateActivity(@PathVariable Long id, @RequestBody ActivityRequest request) {
         for (Activity activity : activities) {
             if (activity.getId().equals(id)) {
-                activity.setName(name.trim());
-                activity.setDescription(description);
+                activity.setName(request.name.trim());
+                activity.setDescription(request.description);
                 return activity;
             }
         }
@@ -56,6 +56,11 @@ public class ActivityController {
     @DeleteMapping("/{id}")
     public boolean deleteActivity(@PathVariable Long id) {
         return activities.removeIf(activity -> activity.getId().equals(id));
+    }
+
+    public static class ActivityRequest {
+        public String name;
+        public String description;
     }
 
     public static class Activity {
