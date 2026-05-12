@@ -63,14 +63,14 @@ public class ActivityController {
     }
 
     @DeleteMapping("/{id}")
-    public boolean deleteActivity(@PathVariable Long id) {
+    public String deleteActivity(@PathVariable Long id) {
         for (Activity activity : activities) {
             if (activity.getId().equals(id)) {
                 activities.remove(activity);
-                return true;
+                return "Activity with ID " + id + " deleted successfully.";
             }
         }
-        return false;
+        return "Activity with ID " + id + " not found.";
     }
 
     public static class Activity {
