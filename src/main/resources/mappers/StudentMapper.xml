@@ -25,6 +25,21 @@
 			(#{firstName}, #{lastName}, #{midtermGrade}, #{finalGrade})
 	</insert>
 
-	
-	
+	<update id="updateStudent">
+		UPDATE student
+		SET
+			first_name = #{firstName},
+			last_name = #{lastName},
+			midterm_grade = #{midtermGrade},
+			final_grade = #{finalGrade}
+		WHERE
+			id = #{id}
+	</update>
+
+	<delete id="deleteStudent">
+		DELETE FROM student
+		WHERE
+			id = #{id}
+	</delete>
+
 </mapper>
