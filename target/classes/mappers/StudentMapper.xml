@@ -18,6 +18,23 @@
 			id=#{id}
     </select>
 
+	<select id="retrieveAllStudent" resultMap = "studentResultMap">
+        SELECT
+			*
+		FROM
+			student
+    </select>
+
+	<select id="searchByName" resultMap = "studentResultMap">
+        SELECT
+			*
+		FROM
+			student
+		WHERE
+			last_name = #{lastName}
+			AND first_name = #{firstName}
+    </select>
+
 	<insert id="insertStudent" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO student
 			(first_name, last_name, midterm_grade, final_grade)

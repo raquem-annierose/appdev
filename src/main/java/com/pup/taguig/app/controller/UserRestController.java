@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,9 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.pup.taguig.app.dto.StudentRequestDTO;
 import com.pup.taguig.app.dto.StudentResponseDTO;
 import com.pup.taguig.app.model.Student;
-import com.pup.taguig.app.model.User;
 import com.pup.taguig.app.service.StudentService;
-import com.pup.taguig.app.service.UserService;
 
 import jakarta.annotation.PostConstruct;
 
@@ -27,22 +26,11 @@ import jakarta.annotation.PostConstruct;
 @RequestMapping("user")
 public class UserRestController {
 
-    private final StudentController studentController;
-
     private List<Student> students = null;
-    
-    List<User> users = new ArrayList<User>();
-
-    @Autowired
-    private UserService userService;
 
     @Autowired
     private StudentService studentService;
 
-    UserRestController(StudentController studentController) {
-        this.studentController = studentController;
-    }
-    
     @PostConstruct
     public void init() {
         students = new ArrayList<>();
@@ -60,40 +48,28 @@ public class UserRestController {
         students.add(st5);
     }
     
-    // @GetMapping("/")
-    // public List<StudentResponseDTO> getAllUsers() {
-    //     return students;
-    // }
+    /**
+     * Get all students
+     * GET /user/
+     */
+    @GetMapping("/")
+    public List<StudentResponseDTO> getAllUsers() {
+        return studentService.retrieveAllStudent();
+    }
     
+    /**
+     * Get student by ID
+     * GET /user/{id}
+     */
     @GetMapping("/{id}")
     public StudentResponseDTO getUsersById(@PathVariable Long id) {
-        
-        // if (Objects.nonNull(students)) {
-        //     return userService.getUserById(id);
-        // }
-        // System.out.println(students.size());
         return studentService.getUserById(id);
     }
 
-    // @PostMapping("/")
-    // public Student addStudent(@RequestBody StudentRequestDTO student) {
-    //     if (Objects.nonNull(student)) {
-    //         Long id = userService.addUser(student);
-            
-    //         // Create and return the saved student with all data
-    //         Student savedStudent = new Student(
-    //             student.getFirstName(),
-    //             student.getLastName(),
-    //             student.getMidtermGrade(),
-    //             student.getFinalGrade()
-    //         );
-    //         savedStudent.setId(id);
-    //         return savedStudent;
-    //     }
-    //     return null;
-    // }
-
-
+    /**
+     * Create a new student
+     * POST /user/
+     */
     @PostMapping("/")
     public Long addStudent(@RequestBody StudentRequestDTO student) {
         Long result = null;
@@ -103,25 +79,41 @@ public class UserRestController {
         return result;
     }
     
-    @GetMapping("/")
-    public List<StudentResponseDTO> getAllUsers() {
-        return userService.retrieveAllStudent();
+    /**
+     * Update an existing student
+     * PUT /user/{id}
+     */
+    @PutMapping("/{id}")
+    public StudentResponseDTO updateStudent(@PathVariable Long id, @RequestBody StudentRequestDTO student) {
+        StudentResponseDTO result = null;
+        if (Objects.nonNull(student)) {
+            result = studentService.updateStudent(id, student);
+        }
+        return result;
     }
     
-    
+    /**
+     * Search students by name
+     * GET /user/filter?lastName=Doe&firstName=John
+     */
     @GetMapping("/filter")
-    public List<StudentResponseDTO> searchByName(@RequestParam("lastName") String name,
+    public List<StudentResponseDTO> searchByName(
+            @RequestParam("lastName") String lastName,
             @RequestParam String firstName) {
         List<StudentResponseDTO> result = new ArrayList<>();
-        if (Objects.nonNull(name) && Objects.nonNull(firstName)) {
-            result = userService.searchByName(name, firstName);
+        if (Objects.nonNull(lastName) && Objects.nonNull(firstName)) {
+            result = studentService.searchByName(lastName, firstName);
         }
         return result;
     }
 
+    /**
+     * Delete a student
+     * DELETE /user/{id}
+     */
     @DeleteMapping("/{id}")
     public boolean deleteStudent(@PathVariable Long id) {
-        return userService.deleteStudent(id);
+        return studentService.deleteStudent(id);
     }
 
 }
