@@ -23,7 +23,9 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public StudentResponseDTO getUserById(Long id) {
         StudentM student = studentMapper.getUserById(id);
-
+        if (student == null) {
+            return null;
+        }
         return this.toDTO(student);
     }
     
@@ -48,17 +50,10 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public List<StudentResponseDTO> retrieveAllStudent() {
-       
         List<StudentM> students = studentMapper.retrieveAllStudent();
         return students.stream()
-        .map(student -> new StudentResponseDTO(
-            student.getId(),
-            student.getFirstName(),
-            student.getLastName(),
-            student.getMidtermGrade(),
-            student.getFinalGrade()
-        ))
-        .toList();
+                .map(this::toDTO)
+                .toList();
     }
 
 	@Override

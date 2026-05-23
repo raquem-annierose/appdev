@@ -24,10 +24,13 @@ public class StudentResponseDTO {
 	 	
 	 }
 	 
-	 public void setDepartment(DepartmentResponseDTO deptDTO) {
-			// TODO Auto-generated method stub
-			
-		 }
+	 public DepartmentResponseDTO getDepartment() {
+		 return department;
+	 }
+
+	 public void setDepartment(DepartmentResponseDTO department) {
+		 this.department = department;
+	 }
 	 
 	 public long getId() {
 		 return id;

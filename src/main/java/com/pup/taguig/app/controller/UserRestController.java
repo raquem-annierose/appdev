@@ -105,7 +105,7 @@ public class UserRestController {
     
     @GetMapping("/")
     public List<StudentResponseDTO> getAllUsers() {
-        return userService.retrieveAllStudent();
+        return studentService.retrieveAllStudent();
     }
     
     
