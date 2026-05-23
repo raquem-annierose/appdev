@@ -4,7 +4,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import com.pup.taguig.app.dto.DepartmentResponseDTO;
 import com.pup.taguig.app.dto.StudentRequestDTO;
 import com.pup.taguig.app.dto.StudentResponseDTO;
@@ -17,12 +18,15 @@ import com.pup.taguig.app.service.StudentService;
 @Service
 public class StudentServiceImpl implements StudentService {
 
+    private static final Logger LOGGER = LogManager.getLogger(StudentServiceImpl.class);
     @Autowired
     private StudentMapper studentMapper;
 
     @Override
     public StudentResponseDTO getUserById(Long id) {
+    	LOGGER.info("Enter getUserById");
         StudentM student = studentMapper.getUserById(id);
+        LOGGER.info("End getUserById");
         if (student == null) {
             return null;
         }
