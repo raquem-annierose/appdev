@@ -60,6 +60,15 @@ public class StudentServiceImpl implements StudentService {
 		return student.getId();
 	}
     
+    public boolean deleteStudentById(Long id) {
+        boolean result = false;
+
+
+        if (studentMapper.deleteStudentById(id) > 0) {
+            result = true;
+        }
+        return result;
+    }
     
 
 }

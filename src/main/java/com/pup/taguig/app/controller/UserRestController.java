@@ -121,7 +121,7 @@ public class UserRestController {
 
     @DeleteMapping("/{id}")
     public boolean deleteStudent(@PathVariable Long id) {
-        return userService.deleteStudent(id);
+        return studentService.deleteStudentById(id);
     }
 
 }

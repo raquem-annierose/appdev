@@ -13,5 +13,6 @@ public interface StudentMapper {
 	public Long addUser(StudentM request);
 	public Long insertUser(StudentM student);
 	public Long insertStudent(StudentM student);
+	public int deleteStudentById(Long id);
     
 }

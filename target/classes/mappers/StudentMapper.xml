@@ -36,7 +36,7 @@
 			id = #{id}
 	</update>
 
-	<delete id="deleteStudent">
+	<delete id="deleteById" parameterType="Long">
 		DELETE FROM student
 		WHERE
 			id = #{id}
