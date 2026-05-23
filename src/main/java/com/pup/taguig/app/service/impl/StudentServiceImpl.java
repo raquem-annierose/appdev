@@ -27,9 +27,7 @@ public class StudentServiceImpl implements StudentService {
     	LOGGER.info("Enter getUserById");
         StudentM student = studentMapper.getUserById(id);
         LOGGER.info("End getUserById");
-        if (student == null) {
-            return null;
-        }
+        
         return this.toDTO(student);
     }
     
