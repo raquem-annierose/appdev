@@ -1,11 +1,16 @@
 package com.pup.taguig.app.dto;
 
+
+
+
 public class StudentResponseDTO {
 	 private long id;
 	 private String firstName;
 	 private String lastName;
 	 private float midtermGrade;
 	 private float finalGrade;
+	 
+	 private DepartmentResponseDTO department;
 	 
 	 public StudentResponseDTO() {}
 	 
@@ -18,6 +23,11 @@ public class StudentResponseDTO {
 	 	this.finalGrade = finalGrade;
 	 	
 	 }
+	 
+	 public void setDepartment(DepartmentResponseDTO deptDTO) {
+			// TODO Auto-generated method stub
+			
+		 }
 	 
 	 public long getId() {
 		 return id;
@@ -49,6 +59,8 @@ public class StudentResponseDTO {
 	 public void setFinalGrade(float finalGrade) {
 		 this.finalGrade = finalGrade;
 	 }
+
+	
 	 
 	 
 }

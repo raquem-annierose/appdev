@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.pup.taguig.app.dto.DepartmentResponseDTO;
 import com.pup.taguig.app.dto.StudentRequestDTO;
 import com.pup.taguig.app.dto.StudentResponseDTO;
 import com.pup.taguig.app.model.Student;
@@ -23,13 +24,26 @@ public class StudentServiceImpl implements StudentService {
     public StudentResponseDTO getUserById(Long id) {
         StudentM student = studentMapper.getUserById(id);
 
-        return new StudentResponseDTO(
-                student.getId(),
-                student.getFirstName(),
-                student.getLastName(),
-                student.getMidtermGrade(),
-                student.getFinalGrade()
-        );
+        return this.toDTO(student);
+    }
+    
+    private StudentResponseDTO toDTO(StudentM student) {
+    	StudentResponseDTO responseDTO = new StudentResponseDTO (
+    			 student.getId(),
+                 student.getFirstName(),
+                 student.getLastName(),
+                 student.getMidtermGrade(),
+                 student.getFinalGrade()
+         );
+    			
+    	if(student.getDepartment() != null) {
+    		DepartmentResponseDTO deptDTO = new DepartmentResponseDTO();
+    		deptDTO.setId(student.getDepartment().getId());
+    		deptDTO.setName(student.getDepartment().getName());
+    		deptDTO.setDisplayName(student.getDepartment().getDisplayName());
+    		responseDTO.setDepartment(deptDTO);
+    	}
+    	return responseDTO;
     }
 
     @Override
@@ -60,13 +74,18 @@ public class StudentServiceImpl implements StudentService {
 		return student.getId();
 	}
     
+    @Override
     public boolean deleteStudentById(Long id) {
         boolean result = false;
 
-
-        if (studentMapper.deleteStudentById(id) > 0) {
+        try {
+            if (studentMapper.deleteStudentById(id) > 0) {
             result = true;
+            }
+        } catch (Exception e) {
+            System.out.println("Error deleting student with id " + id + ": " + e.getMessage());
         }
+
         return result;
     }
     

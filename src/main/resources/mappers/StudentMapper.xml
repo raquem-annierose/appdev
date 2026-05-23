@@ -2,20 +2,40 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.pup.taguig.app.repositoryM.StudentMapper">
 	<resultMap id="studentResultMap" type="com.pup.taguig.app.model.StudentM">
-		<id column = "id" property = "id"/>
+		<id column = "stud_id" property = "id"/>
 		<result column = "first_name" property = "firstName"/>
 		<result column = "last_name" property = "lastName"/>
 		<result column = "midterm_grade" property = "midtermGrade"/>
 		<result column = "final_grade" property = "finalGrade"/>
+		
+		<association property="department" resultMap="departmentResultMap"></association>
+	
+	</resultMap>
+
+	<resultMap id="departmentResultMap" type="com.pup.taguig.app.model.Department">
+		<id column = "dept_id" property = "id"/>
+		<result column = "name" property = "name"/>
+		<result column = "display_name" property = "displayName"/>
+		
 	</resultMap>
 
 	<select id="getUserById" resultMap = "studentResultMap">
         SELECT
-			*
+        	s.id as stud_id,
+        	s.first name,
+        	s.last name,
+        		s.midterm grade,
+        		s.final grade,
+        		d.id as dept.id,
+        		d.name,
+        		d.display_name
 		FROM
-			student
+			student s 
+		LEFT JOIN department d
+			ON s.department id = d.id
 		WHERE
-			id=#{id}
+			s.id = #(id)
+			
     </select>
 
 	<insert id="insertStudent" useGeneratedKeys="true" keyProperty="id">
@@ -36,10 +56,11 @@
 			id = #{id}
 	</update>
 
-	<delete id="deleteById" parameterType="Long">
+	<delete id="deleteStudentById" parameterType="Long">
 		DELETE FROM student
 		WHERE
 			id = #{id}
 	</delete>
-
 </mapper>
+
+	
