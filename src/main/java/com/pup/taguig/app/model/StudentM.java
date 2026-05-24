@@ -63,19 +63,19 @@ public class StudentM {
 //    public String getLastName() {
 //        return lastName;
 //    }
-//    
+//
 //    public float compute() {
 //        return (midtermGrade + finalGrade) / 2;
 //    }
-//    
+//
 //    public String evaluate() {
 //        float average = this.compute();
-//        
+//
 //        if (average >= 75) {
 //            return "Pass";
 //        } else {
 //            return "Failed";
 //        }
-//    
+//
 //}
 }
