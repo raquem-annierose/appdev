@@ -68,10 +68,6 @@ public class UserRestController {
     @GetMapping("/{id}")
     public StudentResponseDTO getUsersById(@PathVariable Long id) {
         
-        // if (Objects.nonNull(students)) {
-        //     return userService.getUserById(id);
-        // }
-        // System.out.println(students.size());
         return studentService.getUserById(id);
     }
 
