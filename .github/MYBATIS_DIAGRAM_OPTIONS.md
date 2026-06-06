@@ -22,9 +22,8 @@ sequenceDiagram
 
     UI->>C: GET /user/1
     C->>S: getUserById(1)
-    Note over S,I: interface → impl<br/>(impl = @Service bean,<br/>injected via controller's @Autowired)
+    Note over S,I: tawag sa interface,<br/>tumatakbo sa Impl (Spring DI)
     S-->>I: 
-    Note over I,M: @Autowired StudentMapper sa Impl<br/>(MyBatis proxy injected)
     I->>M: studentMapper.getUserById(1)
     Note over M,X: namespace + id="getUserById"
     M-->>X: 
@@ -53,10 +52,9 @@ sequenceDiagram
     UI->>C: POST /user/ { ... } (JSON)
     Note over C: Jackson → StudentRequestDTO
     C->>S: insertStudent(requestDTO)
-    Note over S,I: interface → impl<br/>(impl = @Service bean,<br/>injected via controller's @Autowired)
+    Note over S,I: tawag sa interface,<br/>tumatakbo sa Impl (Spring DI)
     S-->>I: 
     Note over I: RequestDTO → 📦 StudentM
-    Note over I,M: @Autowired StudentMapper sa Impl<br/>(MyBatis proxy injected)
     I->>M: studentMapper.insertStudent(📦 StudentM)
     Note over M,X: namespace + id="insertStudent"
     M-->>X: 
@@ -75,66 +73,51 @@ sequenceDiagram
 
 ## OPTION 2 — Pinagsama (isang color-coded `flowchart`)
 
-> 🟢 Green solid = WRITE (down). 🔵 Blue dotted = READ (up).
-> 🟣 Purple boxes = **containers/templates** (POJO): `RequestDTO`, `StudentM` (model), `ResponseDTO`. Hindi sila istasyon — pinupunan lang sila sa isang layer, tapos dinadala.
-> 🟡 Yellow panel sa **gilid** = ang purpose ng bawat layer.
+> 🟢 Berde solid = WRITE (pababa). 🔵 Asul dotted = READ (paakyat).
+> Ang **`StudentM` (📦)** ay HINDI istasyon — siya ang **cargo/produkto** na nilikha ng XML at sumasakay sa return path paakyat. Kaya nakadikit siya sa **return arrows**, hindi sa gitna.
+
+> Ang mga **kahon na hugis-kapsula (🟣)** = **lalagyanan/template lang** (POJO): `RequestDTO`, `StudentM`, `ResponseDTO`. Hindi sila istasyon — pinupunan lang sila sa isang layer, tapos dinadala.
 
 ```mermaid
-flowchart LR
-    subgraph FLOW["REST flow — 🟢 down = WRITE (POST), 🔵 up = READ (GET)"]
-        direction TB
-        UI["🖥️ Client"]
-        C["Controller<br/>UserRestController"]
-        S["Service interface<br/>StudentService"]
-        I["Service Impl<br/>StudentServiceImpl"]
-        M["Mapper interface<br/>StudentMapper<br/>(@Autowired in Impl = MyBatis proxy)"]
-        X["Mapper XML<br/>StudentMapper.xml"]
-        DB[("🗄️ Database")]
+flowchart TD
+    UI["🖥️ Client"]
+    C["Controller<br/>UserRestController"]
+    S["Service interface<br/>StudentService"]
+    I["Service Impl<br/>StudentServiceImpl"]
+    M["Mapper interface<br/>StudentMapper<br/>(doorway lang — walang logic)"]
+    X["Mapper XML<br/>StudentMapper.xml<br/>(dito pinupunan ang basket)"]
+    DB[("🗄️ Database")]
 
-        %% --- CONTAINERS / templates (POJO) ---
-        REQ["📥 StudentRequestDTO<br/>INPUT container (POJO)"]
-        SM["📦 StudentM<br/>MODEL — DB-data container (POJO)"]
-        RES["📤 StudentResponseDTO<br/>OUTPUT container (POJO)"]
+    %% --- mga LALAGYANAN / template (POJO) ---
+    REQ(["📥 StudentRequestDTO<br/>lalagyanan ng INPUT"])
+    SM(["📦 StudentM<br/>lalagyanan ng DB data"])
+    RES(["📤 StudentResponseDTO<br/>lalagyanan ng OUTPUT"])
 
-        %% WRITE path (down) — index 0-5
-        UI -->|"POST: JSON"| C
-        C -->|"insertStudent()"| S
-        S -->|"@Service impl (via @Autowired)"| I
-        I -->|"carry: StudentM"| M
-        M -->|"proxy: namespace + id"| X
-        X -->|"INSERT VALUES (#{...})"| DB
+    %% WRITE path (pababa) — index 0-5
+    UI -->|"POST: JSON"| C
+    C -->|"insertStudent(...)"| S
+    S -->|"call → Impl (Spring DI)"| I
+    I -->|"dala: StudentM"| M
+    M -->|"proxy: namespace + id"| X
+    X -->|"INSERT VALUES (#{...})"| DB
 
-        %% READ path (up) — index 6-11
-        DB -.->|"rows / ResultSet"| X
-        X -.->|"carry: StudentM"| M
-        M -.->|"return: StudentM"| I
-        I -.->|"carry: ResponseDTO"| S
-        S -.->|"ResponseDTO"| C
-        C -.->|"Jackson → JSON"| UI
+    %% READ path (paakyat) — index 6-11
+    DB -.->|"rows / ResultSet"| X
+    X -.->|"dala: StudentM"| M
+    M -.->|"return: StudentM"| I
+    I -.->|"dala: ResponseDTO"| S
+    S -.->|"ResponseDTO"| C
+    C -.->|"Jackson → JSON"| UI
 
-        %% where each container is FILLED — index 12-16
-        C -. "Jackson fills (JSON→)" .- REQ
-        I -. "WRITE: copies from REQ" .- SM
-        X -. "READ: resultMap fills<br/>(type = StudentM)" .- SM
-        I -. "READ: toDTO fills" .- RES
-        C -. "Jackson reads (→JSON)" .- RES
-    end
-
-    subgraph PURPOSE["Purpose of each layer"]
-        direction TB
-        PC["Controller<br/>defines API routes;<br/>receives/returns DTO (JSON)"]
-        PS["Service interface<br/>contract / abstraction"]
-        PI["Service Impl<br/>business logic;<br/>converts DTO ⇄ StudentM"]
-        PM["Mapper interface<br/>doorway only, no logic<br/>(MyBatis generates proxy)"]
-        PX["Mapper XML<br/>actual SQL + resultMap<br/>(fills StudentM)"]
-        PDB["Database<br/>stores/returns rows;<br/>auto-generates id"]
-        PC ~~~ PS ~~~ PI ~~~ PM ~~~ PX ~~~ PDB
-    end
+    %% --- saan PINUPUNAN ang bawat lalagyanan (index 12-16) ---
+    C -. "Jackson pumupuno (JSON→)" .- REQ
+    I -. "WRITE: kinokopya mula REQ" .- SM
+    X -. "READ: resultMap pumupuno<br/>(type = StudentM)" .- SM
+    I -. "READ: toDTO pumupuno" .- RES
+    C -. "Jackson basa (→JSON)" .- RES
 
     classDef basket fill:#f3e5f5,stroke:#9c27b0,stroke-width:2px,color:#4a148c;
     class REQ,SM,RES basket;
-    classDef purpose fill:#fff8e1,stroke:#f9a825,color:#5d4037;
-    class PC,PS,PI,PM,PX,PDB purpose;
 
     linkStyle 0,1,2,3,4,5 stroke:#2e7d32,stroke-width:2px
     linkStyle 6,7,8,9,10,11 stroke:#1565c0,stroke-width:2px
@@ -142,10 +125,9 @@ flowchart LR
 ```
 
 **Legend:**
-- 🟢 **Green solid (down)** = WRITE / `POST`.
-- 🔵 **Blue dotted (up)** = READ / `GET`.
-- 🟣 **Purple box** = **container/template** (POJO). Ang dashed purple line ay nagtuturo **saan pinupunan** ang bawat container.
-- 🟡 **Yellow panel (gilid)** = purpose/role ng bawat layer.
+- 🟢 **Green solid (pababa)** = WRITE / `POST`.
+- 🔵 **Blue dotted (paakyat)** = READ / `GET`.
+- 🟣 **Purple capsule** = **lalagyanan/template** (POJO). Ang dashed purple na linya ay nagtuturo **saan pinupunan** ang bawat basket.
 
 ### Bakit kahon (lalagyanan) ang DTO at StudentM?
 

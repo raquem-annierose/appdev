@@ -50,9 +50,8 @@ sequenceDiagram
     UI->>C: GET /user/1
     Note over C: @GetMapping("/{id}")<br/>id = 1
     C->>S: studentService.getUserById(1)
-    Note over S,I: interface → impl<br/>(impl = @Service bean,<br/>injected via controller's @Autowired)
+    Note over S,I: tawag sa interface,<br/>tumatakbo sa Impl (Spring DI)
     S-->>I: resolved at runtime
-    Note over I,M: @Autowired StudentMapper sa Impl<br/>(MyBatis proxy injected)
     I->>M: studentMapper.getUserById(1)
     Note over M,X: bound by<br/>namespace + id="getUserById"
     M-->>X: matches <select id="getUserById">
@@ -83,9 +82,8 @@ sequenceDiagram
     UI->>C: POST /user/ { firstName, lastName, ... } (JSON)
     Note over C: @PostMapping("/")<br/>Jackson: JSON → StudentRequestDTO
     C->>S: studentService.insertStudent(requestDTO)
-    S-->>I: interface → @Service impl (injected via @Autowired)
+    S-->>I: tawag sa interface, tumatakbo sa Impl (Spring DI)
     Note over I: bagong StudentM;<br/>request.getFirstName() → student.setFirstName()<br/>(RequestDTO → StudentM)
-    Note over I,M: @Autowired StudentMapper sa Impl<br/>(MyBatis proxy injected)
     I->>M: studentMapper.insertStudent(studentM)
     Note over M,X: bound by<br/>namespace + id="insertStudent"
     M-->>X: matches <insert id="insertStudent">
@@ -102,36 +100,6 @@ sequenceDiagram
 💡 **Dalawang "tahimik" na binding** (pareho sa magkabilang diagram):
 1. **interface → impl:** tinatawag ng controller ang **`StudentService` (interface)**, hindi diretso ang impl. Si Spring ang nag-inject ng impl (`@Autowired`).
 2. **mapper → XML:** walang implementation class na isinulat. Idinudugtong ni MyBatis ang method sa `<select>`/`<insert>` gamit ang **namespace + id**.
-
-### `@Service` vs `@Autowired` — dalawang magkaibang annotation na nagtutulungan
-
-Ang arrow na interface → impl ay umaandar dahil sa **dalawang magkabilang dulo**, hindi iisang annotation:
-
-| | `@Service` (sa Impl) | `@Autowired` (sa Controller) |
-|---|---|---|
-| Nasaan | `StudentServiceImpl` | field ng Controller |
-| Trabaho | **register as a bean** (supply) | **inject a bean here** (demand) |
-| Sabi kay Spring | "manage this class" | "plug a bean of this type here" |
-
-```java
-@Service                                    // ① supply: gawing bean ang impl
-public class StudentServiceImpl implements StudentService { ... }
-```
-```java
-// Sa Controller:
-@Autowired                                  // ② demand: humingi ng bean
-private StudentService studentService;      // type = INTERFACE
-```
-
-**Paano sila nagtutulungan:**
-1. **`@Service`** → nakikita ni Spring ang `StudentServiceImpl`, gumagawa ng **isang instance (bean)** nito.
-2. **`@Autowired`** (controller) → "may kailangan akong `StudentService` dito."
-3. **An interface cannot be instantiated** (`new StudentService()` ❌). So **Spring looks for a bean that implements `StudentService`** → nakita ang `@Service`-marked `StudentServiceImpl` → **injects it**.
-4. Result: tinatawag mo ang interface (`studentService.getUserById(1)`), pero **the impl is what actually runs**.
-
-> ⚠️ **Linaw:** hindi `@Autowired` ang nakadikit sa impl — ang impl ay **`@Service`**. Ang `@Autowired` ay nasa **controller** (ang humihingi). Magkapwa kailangan: walang `@Service` = walang bean na maibibigay; walang `@Autowired` = walang injection.
->
-> **Rule of thumb:** you autowire by **type (interface)**; **Spring picks the matching `@Service`/`@Component`/`@Mapper` bean** and plugs it in. Same idea sa Impl: `@Autowired StudentMapper` → MyBatis-generated proxy ang isinasalpak.
 
 ---
 
@@ -171,24 +139,6 @@ boolean deleteStudentById(Long id);
 ### 3.3 Service Impl — `StudentServiceImpl.java`  ← ang "tagaluto"
 
 ✅ Tama ang pagkakaintindi mo: **kumukuha siya ng ingredients at siya ang nagco-compile/nag-aassemble.**
-
-**Una — inject ng impl ang Mapper interface sa loob mismo ng file niya:**
-```java
-@Service                                  // ① impl mismo ay bean (kaya ma-inject sa controller)
-public class StudentServiceImpl implements StudentService {
-
-    @Autowired                            // ② demand: humingi ng StudentMapper bean
-    private StudentMapper studentMapper;   // type = MAPPER INTERFACE (repositoryM)
-    ...
-}
-```
-- Gaya ng ginagawa ng controller sa service, **ginagawa rin ng impl sa mapper**: `@Autowired` ng **`StudentMapper` (interface)**.
-- Pero walang implementation class ang mapper — **si MyBatis ang gumagawa ng generated proxy** at 'yon ang isinasalpak bilang bean (dahil `@Mapper` ito).
-- Kaya kapag tinawag ang `studentMapper.getUserById(id)`, ang **MyBatis proxy** ang tumatakbo → dumadaan sa XML (via namespace + id).
-
-> 💡 Pansinin ang parehong pattern sa dalawang layer:
-> - **Controller** `@Autowired StudentService` → Spring injects `@Service` impl.
-> - **Impl** `@Autowired StudentMapper` → MyBatis injects generated `@Mapper` proxy.
 
 **Read (palabas)** — kinukuha ang `StudentM`, ginagawang DTO:
 ```java
