@@ -22,7 +22,33 @@ SET @@SESSION.SQL_LOG_BIN= 0;
 --
 
 SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ 'abdc44a1-1ea0-11f1-9670-6ea32cbf84b2:1-614,
-e8c828bf-f899-11f0-9ad9-106838864097:1-116870';
+e8c828bf-f899-11f0-9ad9-106838864097:1-119099';
+
+--
+-- Table structure for table `activity`
+--
+
+DROP TABLE IF EXISTS `activity`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `activity` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `created_at` datetime(6) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `name` varchar(200) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `activity`
+--
+
+LOCK TABLES `activity` WRITE;
+/*!40000 ALTER TABLE `activity` DISABLE KEYS */;
+INSERT INTO `activity` VALUES (1,'2026-04-27 23:30:31.468286','act for one','Activity 1'),(2,'2026-04-27 23:30:43.330176','act for two','Activity 2'),(3,'2026-04-27 23:30:50.278467','act for three','Activity 3'),(4,'2026-05-24 23:10:38.463717','First quiz for the semester','Quiz 1');
+/*!40000 ALTER TABLE `activity` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `departments`
@@ -45,6 +71,7 @@ CREATE TABLE `departments` (
 
 LOCK TABLES `departments` WRITE;
 /*!40000 ALTER TABLE `departments` DISABLE KEYS */;
+INSERT INTO `departments` VALUES (1,'IT','BSIT'),(2,'ENG','BSED');
 /*!40000 ALTER TABLE `departments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -59,13 +86,14 @@ CREATE TABLE `student` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `final_grade` float NOT NULL,
   `first_name` varchar(100) NOT NULL,
-  `last_name` varchar(255) DEFAULT NULL,
+  `last_name` varchar(255) NOT NULL,
   `midterm_grade` float NOT NULL,
-  `department_id` int NOT NULL,
+  `department_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `first_name_UNIQUE` (`first_name`),
-  KEY `fk_dept_id_idx` (`department_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `fk_dept_id_idx` (`department_id`) /*!80000 INVISIBLE */,
+  CONSTRAINT `fk_dept_id` FOREIGN KEY (`department_id`) REFERENCES `departments` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -74,8 +102,33 @@ CREATE TABLE `student` (
 
 LOCK TABLES `student` WRITE;
 /*!40000 ALTER TABLE `student` DISABLE KEYS */;
-INSERT INTO `student` VALUES (3,90,'Annie','Raquem',90,0),(4,90,'Annie Rose','Raquem',90,0),(5,90,'Annie Roses','Raquem',90,0),(6,90,'Annie Rosess','Raquem',90,0);
+INSERT INTO `student` VALUES (9,90,'Annie','Raquem',85,1),(10,90,'Ivan','Fernandez',90,1);
 /*!40000 ALTER TABLE `student` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user`
+--
+
+DROP TABLE IF EXISTS `user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `age` int NOT NULL,
+  `first_name` varchar(255) DEFAULT NULL,
+  `last_name` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user`
+--
+
+LOCK TABLES `user` WRITE;
+/*!40000 ALTER TABLE `user` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -88,4 +141,4 @@ SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-05-23 10:11:29
+-- Dump completed on 2026-06-06 11:12:16

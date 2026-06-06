@@ -1,5 +1,6 @@
 com\pup\taguig\app\dto\DepartmentResponseDTO.class
 com\pup\taguig\app\repository\StudentRepository.class
+com\pup\taguig\app\controller\DepartmentController.class
 com\pup\taguig\app\controller\UserRawController$UserRequest.class
 com\pup\taguig\app\controller\ActivityController.class
 com\pup\taguig\app\dto\StudentResponseDTO.class
@@ -12,10 +13,12 @@ com\pup\taguig\app\model\Activity.class
 com\pup\taguig\app\service\impl\StudentServiceImpl.class
 com\pup\taguig\app\controller\StudentController$StudentRequest.class
 com\pup\taguig\app\exception\package-info.class
+com\pup\taguig\app\repository\DepartmentMapper.class
 com\pup\taguig\app\service\impl\UserServiceImpl.class
 com\pup\taguig\app\dto\ActivityRequestDTO.class
 com\pup\taguig\app\model\Student.class
 com\pup\taguig\app\repositoryM\package-info.class
+com\pup\taguig\app\service\DepartmentService.class
 com\pup\taguig\app\repositoryM\StudentMapper.class
 com\pup\taguig\app\dto\package-info.class
 com\pup\taguig\app\dto\ActivityResponseDTO.class
@@ -25,10 +28,12 @@ com\pup\taguig\app\repository\ActivityRepository.class
 com\pup\taguig\app\controller\StudentController.class
 com\pup\taguig\app\service\impl\ActivityServiceImpl.class
 com\pup\taguig\app\dto\StudentRequestDTO.class
+com\pup\taguig\app\dto\DepartmentRequestDTO.class
 com\pup\taguig\app\model\Department.class
 com\pup\taguig\app\service\UserService.class
 com\pup\taguig\app\model\User.class
 com\pup\taguig\app\repository\package-info.class
 com\pup\taguig\app\controller\UserRawController.class
+com\pup\taguig\app\service\impl\DepartmentServiceImpl.class
 com\pup\taguig\app\service\package-info.class
 com\pup\taguig\app\model\StudentM.class

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pup.taguig.app.repository.DepartmentMapper">
+	<resultMap id="departmentResultMap" type="com.pup.taguig.app.model.Department">
+		<id column="dept_id" property="id"/>
+		<result column="name" property="name"/>
+		<result column="display_name" property="displayName"/>
+		
+		<collection property='students' ofType="com.pup.taguig.app.model.StudentM" >
+			<id column="stud_id" property="id"/>
+			<result column="first_name" property="firstName"/>
+			<result column="last_name" property="lastName"/>
+			<result column="midterm_grade" property="midtermGrade"/>
+			<result column="final_grade" property="finalGrade"/>
+		</collection>
+		
+	</resultMap>
+	
+	<select id="getDepartmentAndStudentsById" resultMap="departmentResultMap">
+		SELECT
+			d.id AS dept_id,
+			d.name,
+			d.display_name,
+			s.id AS stud_id,
+			s.first_name,
+			s.last_name,
+			<!-- s.midterm_grade,
+			s.final_grade -->
+		FROM departments as d
+		JOIN student as s
+			ON s.department_id = d.id
+		WHERE d.id = #{id}
+
+		
+	</select>
+	
+</mapper>
