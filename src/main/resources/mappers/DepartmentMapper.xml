@@ -24,11 +24,11 @@
 			d.display_name,
 			s.id AS stud_id,
 			s.first_name,
-			s.last_name,
+			s.last_name
 			<!-- s.midterm_grade,
 			s.final_grade -->
 		FROM departments as d
-		JOIN student as s
+		LEFT JOIN student as s
 			ON s.department_id = d.id
 		WHERE d.id = #{id}
 

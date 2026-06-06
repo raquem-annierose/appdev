@@ -30,7 +30,11 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         try {
             Department dept = deptRepository.getDepartmentAndStudentsById(id);
-           
+
+            if (Objects.isNull(dept)) {
+                return null;
+            }
+
             result.setName(dept.getName());
             result.setDisplayName(dept.getDisplayName());
             if(Objects.nonNull(dept.getStudents())) {
