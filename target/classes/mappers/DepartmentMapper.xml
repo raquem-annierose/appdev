@@ -28,7 +28,7 @@
 			<!-- s.midterm_grade,
 			s.final_grade -->
 		FROM departments as d
-		LEFT JOIN student as s
+		JOIN student as s
 			ON s.department_id = d.id
 		WHERE d.id = #{id}
 
