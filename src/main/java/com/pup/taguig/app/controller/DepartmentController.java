@@ -16,14 +16,13 @@ import com.pup.taguig.app.service.DepartmentService;
 public class DepartmentController {
 
 	@Autowired
-	private DepartmentService departmentService;
+	private DepartmentService deptService;
 
 	@GetMapping("/{id}")
 	public DepartmentResponseDTO getDepartmentAndStudentsById(@PathVariable Long id) {
-		DepartmentResponseDTO result = departmentService.getDepartmentAndStudentsById(id);
 
-		if (Objects.nonNull(result)) {
-			return result;
+		if (Objects.nonNull(id)) {
+			return deptService.getDepartmentAndStudentsById(id);
 		}
 
 		return null;
