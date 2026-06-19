@@ -11,8 +11,8 @@
 			<id column="stud_id" property="id"/>
 			<result column="first_name" property="firstName"/>
 			<result column="last_name" property="lastName"/>
-			<result column="midterm_grade" property="midtermGrade"/>
-			<result column="final_grade" property="finalGrade"/>
+			<!-- <result column="midterm_grade" property="midtermGrade"/>
+			<result column="final_grade" property="finalGrade"/> -->
 		</collection>
 		
 	</resultMap>
